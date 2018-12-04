@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>邯郸创鑫房地产租售管理系统</title>
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+<div class="header">
+    <h1>邯郸创鑫房地产租售管理系统</h1>
+    <div class="right fr">
+        <img src="images/people.png" alt="">
+        <span class="name">admin</span>
+    </div>
+</div>
+<div class="main">
+    <div class="bread">首页 &gt; 房源管理 &gt; 实时房态图</div>
+    <div class="search">
+        <div class="search_item">
+            <input type="text" placeholder="输入小区名称">
+        </div>
+        <div class="search_item">
+            <input type="text" placeholder="输入房间标号">
+        </div>
+        <div class="search_item">
+            <div class="title">房源状态:</div>
+            <div class="status">
+                <span class="color green"></span>
+                <span class="status_name">已租</span>
+            </div>
+            <div class="status">
+                <span class="color blue"></span>
+                <span class="status_name">已售</span>
+            </div>
+            <div class="status">
+                <span class="color orange"></span>
+                <span class="status_name">物业</span>
+            </div>
+            <div class="status">
+                <span class="color gray"></span>
+                <span class="status_name">空置</span>
+            </div>
+        </div>
+    </div>
+    <ul class="house" id="house">
+        <li class="green">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="orange">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="blue">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="blue">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="blue">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="blue">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="gray">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="blue">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="green">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="gray">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+        <li class="green">
+            <i></i>
+            <p class="number">101</p>
+            <p class="floor_area">建筑面积：110m²</p>
+            <p class="real_area">实测面积：97m²</p>
+        </li>
+    </ul>
+</div>
+<div class="mask">
+    <div class="mask_main">
+        <div class="title">合同编号：2018111000020100026</div>
+        <div class="content clear">
+            <div class="left fl">
+                <div class="content_title">户型图</div>
+                <div class="content_detail">
+                    <img src="images/house.png" alt="">
+                </div>
+            </div>
+            <div class="right fl">
+                <div class="content_title">基本信息</div>
+                <ul class="content_detail">
+                    <li>
+                        <span class="name">商 户 姓 名</span>
+                        <span class="detail">康师傅</span>
+                    </li>
+                    <li>
+                        <span class="name">联 系 电 话</span>
+                        <span class="detail">1308005342</span>
+                    </li>
+                    <li>
+                        <span class="name">已 售 单 价</span>
+                        <span class="detail">3000/m²</span>
+                    </li>
+                    <li>
+                        <span class="name">总 &emsp; &emsp; 价</span>
+                        <span class="detail">3000000元</span>
+                    </li>
+                    <li>
+                        <span class="name">未 &ensp; 付&ensp; 款</span>
+                        <span class="detail">1000000元</span>
+                    </li>
+                    <li>
+                        <span class="name">是 否 网 签</span>
+                        <span class="detail">是</span>
+                    </li>
+                    <li>
+                        <span class="name">签 订 时 间</span>
+                        <span class="detail">2018年08月05日</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var oHouse = document.getElementById('house');
+    var aSold = oHouse.getElementsByClassName('blue');
+    for(var i=0;i<aSold.length;i++){
+        aSold[i].onclick = function () {
+            document.getElementsByClassName('mask')[0].style.display = 'block'
+        }
+    }
+    document.getElementsByClassName('mask')[0].onclick = function (e) {
+        document.getElementsByClassName('mask')[0].style.display = 'none';
+    }
+    document.getElementsByClassName('mask_main')[0].onclick = function (e) {
+        e.stopPropagation()
+    }
+</script>
+</body>
+</html>
