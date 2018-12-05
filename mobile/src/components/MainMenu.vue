@@ -7,8 +7,8 @@
         <div class="icon icon-home"></div>
         <p>主页</p>
       </router-link>
-      <router-link :to="{path:'/order',query: common}" class="btn"
-                   :class="pathName=='order'?'active':''">
+      <router-link :to="{path:'/count',query: common}" class="btn"
+                   :class="pathName=='count'?'active':''">
         <div class="icon icon-order"></div>
         <p>数据统计</p>
       </router-link>
@@ -83,29 +83,30 @@
           background-image: url("../assets/home.png");
         }
         &.icon-order {
-          background-image: url("../assets/order.png");
+          background-image: url("../assets/count.png");
         }
         &.icon-my {
-          background-image: url("../assets/my.png");
+          background-image: url("../assets/backlog.png");
         }
       }
       p {
         font-size: 10px;
-        color: #444c59;
+        color: #a7adb3;
         margin-top: 5px;
+        font-weight: bold;
       }
       &.active {
         .icon-home {
           background-image: url("../assets/home1.png");
         }
         .icon-order {
-          background-image: url("../assets/order1.png");
+          background-image: url("../assets/count1.png");
         }
         .icon-my {
-          background-image: url("../assets/my1.png");
+          background-image: url("../assets/backlog1.png");
         }
         p {
-          color: #fe8d23;
+          color: #105ba7;
         }
       }
     }

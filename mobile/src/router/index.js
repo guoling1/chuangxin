@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import MainMenu from '@/components/MainMenu'
 import Home from '@/components/Home'
 import Order from '@/components/Order'
+import Count from '@/components/Count'
 import OrderDetail from '@/components/OrderDetail'
 import My from '@/components/My'
 import HomeDetail from '@/components/HomeDetail'
@@ -36,6 +37,14 @@ export default new Router({
           },
       		component:Home
       	},
+        {
+          path:'/count',
+          name:'count',
+          meta:{
+            title:"待办事项"
+          },
+          component:Count
+        },
         {
           path:'/order',
           name:'order',

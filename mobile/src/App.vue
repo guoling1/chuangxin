@@ -1,10 +1,6 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
-      <div class="back" v-if="this.$route.name=='home'">
-        <span @click="isLogin =true" style="color: #fe8d23"
-              v-if="!$store.state.login.isLogin&&$store.state.login.bk==1">登录</span>
-      </div>
       <div class="back" @click="back()" v-if="this.$route.name!='home'">
         <img src="./assets/back.png" alt="">
         <span>返回</span>
@@ -23,7 +19,7 @@
     name: 'App',
     data() {
       return {
-        title: '中国联通',
+        title: '创鑫地产',
         keepAlive: '',
         isLogin: false,
         isBank: false
@@ -60,8 +56,8 @@
     width: 100%;
     height: 50px;
     z-index: 10;
-    /*color: #fefefe;*/
-    background: #fff;
+    color: #fff;
+    background: #435062;
     padding: 15px 10px 0;
 
     .back {
