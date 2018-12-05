@@ -1,30 +1,34 @@
 <template>
   <div class="main">
-    <img src="../assets/empty.png" alt="" style="width: 35%;margin-top: 20%" v-if="orderList.length==0">
-    <ul class="list">
-      <li v-for="(item,index) in this.orderList">
-        <div class="top">
-          <div class="time">{{item.createTime | formatDate}}</div>
-          <div class="price">￥{{item.productPrice}}</div>
-        </div>
-        <div class="content">
-          <div class="left">
-            <img :src="item.swiperList[0].url" alt="">
-          </div>
-          <div class="right">
-            <p class="color">机身颜色：{{item.productColor}}</p>
-            <p class="memory">内存：{{item.productMemory}}</p>
-            <p class="address">归属地：{{item.region}}</p>
-            <p class="bank">开户行：{{item.bank}}</p>
-            <p class="package">合约套餐：{{item.packageName}}</p>
-          </div>
-        </div>
-        <div class="bottom">
-          <div class="state">订单状态：{{item.payStatus}}</div>
-          <div class="button" @click="toDetail(item.id)">查看详情</div>
-        </div>
-      </li>
-    </ul>
+    <div class="top">
+      <img src="../assets/count-tit.png" alt="" class="top_title">
+      <div class="date">{{date}}</div>
+    </div>
+    <div class="select_time">
+      <datetime
+        v-model="startTime"
+        @on-change="change"
+        @on-cancel="log('cancel')"
+        @on-confirm="onConfirm"
+        @on-hide="log('hide', $event)"></datetime>
+      ~
+      <datetime
+      v-model="endTime"
+      @on-change="change"
+      @on-cancel="log('cancel')"
+      @on-confirm="onConfirm"
+      @on-hide="log('hide', $event)"></datetime>
+      <img src="../assets/calendar.png" alt="">
+    </div>
+    <div class="select_status">
+      <div class="name">筛选条件：</div>
+      <div class="status">
+        <p><i></i></p>已收款
+      </div>
+      <div class="status">
+        <p></p>已退款
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,11 +37,15 @@ export default {
   name: 'Count',
   data () {
     return {
+      date: '2018年11月23日 星期五',
+      startTime: '选择开始时间',
+      endTime: '选择截止时间',
+      confirmColor:'#105ba7',
       orderList:[]
     }
   },
   created(){
-    this.getData()
+    // this.getData()
   },
   methods: {
     //获取订单列表
@@ -55,6 +63,16 @@ export default {
 
         })
     },
+    change (value) {
+      console.log('change', value)
+    },
+    log (str1, str2 = '') {
+      console.log(str1, str2)
+    },
+    onConfirm (val) {
+      console.log('on-confirm arg', val)
+      console.log('current value', this.value1)
+    },
     toDetail(id){
       this.$router.push({path:'/orderDetail',query:{id:id,type:2}})
     }
@@ -63,11 +81,64 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+
 <style scoped lang="less" type="text/less">
+
 .main{
   /*margin: 50px 0;*/
   width: 100%;
   padding-bottom: 50px;
+
+  .top{
+    padding: 23px 19px 18px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+    .top_title{
+      width: 100px;
+      height: auto;
+    }
+  }
+  .select_time{
+    margin: 0 auto;
+    width: 80%;
+    height: 31px;
+    background: #f9f9f9;
+    border: 1px solid #e4e4e4;
+    border-radius: 16px;
+    font-size: 14px;
+    img{
+      float: right;
+      margin: 5px 15px 0 0;
+      width: 18px;
+      height: auto;
+    }
+  }
+  .select_status{
+    display: flex;
+    justify-content: space-around;
+    margin: 15px auto 8px;
+    width: 70%;
+    font-size: 14px;
+    color: #000;
+    p{
+      display: inline-block;
+      margin-right: 7px;
+      width: 14px;
+      height: 14px;
+      border: 1px solid #105ba7;
+      border-radius: 2px;
+      vertical-align: baseline;
+      i{
+        display: inline-block;
+        margin-bottom: 2px;
+        width: 8px;
+        height: 8px;
+        background: #105ba7;
+        border-radius: 2px;
+      }
+    }
+  }
 
   .list{
 
@@ -230,4 +301,15 @@ export default {
     }
   }
 }
+</style>
+<style>
+  .vux-datetime {
+    line-height: 30px;
+    display: inline-block;
+    font-size: 14px;
+    color: #999;
+  }
+  .dp-header .dp-item.dp-right{
+    color: #105ba7 !important;
+  }
 </style>

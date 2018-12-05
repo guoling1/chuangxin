@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
-      <div class="back" @click="back()" v-if="this.$route.name!='home'">
-        <img src="./assets/back.png" alt="">
-        <span>返回</span>
-      </div>
+      <!--<div class="back" @click="back()" v-if="this.$route.name!='home'">-->
+        <!--<img src="./assets/back.png" alt="">-->
+        <!--<span>返回</span>-->
+      <!--</div>-->
       <h1>{{title}}</h1>
     </div>
     <router-view style="marginTop:50px"/>

@@ -10,9 +10,10 @@ import store from "./store"
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
-import { Toast,XDialog } from 'vux'
+import { Toast,XDialog,Datetime } from 'vux'
 Vue.component('toast',Toast);
 Vue.component('xDialog',XDialog);
+Vue.component('Datetime',Datetime);
 
 Vue.config.productionTip = false;
 
