@@ -46,7 +46,7 @@
       }
     },
     mounted() {
-      this.drawLine();  // 初始化
+      // this.drawLine();  // 初始化
     },
     created() {
       var url = location.href

@@ -6,14 +6,19 @@ import router from './router'
 import qs from "qs"
 import store from "./store"
 
-// 引入echarts
-import echarts from 'echarts'
-Vue.prototype.$echarts = echarts
+// // 引入echarts
+// import echarts from 'echarts'
+// Vue.prototype.$echarts = echarts
 
-import { Toast,XDialog,Datetime } from 'vux'
+import { Toast,XDialog,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable} from 'vux'
 Vue.component('toast',Toast);
 Vue.component('xDialog',XDialog);
-Vue.component('Datetime',Datetime);
+Vue.component('datetime',Datetime);
+Vue.component('tab', Tab)
+Vue.component('tab-item', TabItem)
+Vue.component('loading', Loading )
+Vue.component('loadingPlugin', LoadingPlugin)
+Vue.component('x-table', XTable)
 
 Vue.config.productionTip = false;
 
