@@ -12,8 +12,8 @@
         <div class="icon icon-order"></div>
         <p>数据统计</p>
       </router-link>
-      <router-link :to="{path:'/my',query: common}" class="btn"
-                   :class="pathName=='my'?'active':''">
+      <router-link :to="{path:'/backlog',query: common}" class="btn"
+                   :class="pathName=='backlog'?'active':''">
         <div class="icon icon-my"></div>
         <p>代办事项</p>
       </router-link>

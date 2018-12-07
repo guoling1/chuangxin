@@ -27,9 +27,6 @@ axios.defaults.baseURL = "http://www.wojinxin.com/wofinance";
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios= axios;
 
-import global_ from './components/Global'
-Vue.prototype.GLOBAL = global_
-
 // 全局过滤器
 Vue.filter('formatDate', function (value) {
   let time = new Date(value);

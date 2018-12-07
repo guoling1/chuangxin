@@ -8,30 +8,22 @@
       <h1>{{title}}</h1>
     </div>
     <router-view style="marginTop:50px"/>
-    <login-mask v-if="isLogin" v-on:child-close="listenClose"></login-mask>
   </div>
 </template>
 
 <script>
-  import LoginMask from './components/loginMask'
-
   export default {
     name: 'App',
     data() {
       return {
         title: '创鑫地产',
-        keepAlive: '',
-        isLogin: false,
-        isBank: false
+        keepAlive: ''
       }
     },
     created() {
 
     },
     methods: {
-      listenClose(val) {
-        this.isLogin = val
-      },
       back() {
         this.$router.go(-1)
       }
@@ -41,16 +33,11 @@
         this.title = cur.meta.title
         this.keepAlive = cur.meta.keepAlive
       }
-    },
-    components: {
-      LoginMask
     }
   }
 </script>
 
 <style lang="less">
-  @import '~vux/src/styles/reset.less';
-
   .title {
     position: fixed;
     width: 100%;
@@ -314,5 +301,17 @@
   textarea {
     overflow: auto; // Remove vertical scrollbar in IE6-9
     vertical-align: top; // Readability and alignment cross-browser
+  }
+  .fl{
+    float:left;
+  }
+  .fr{
+    float:right;
+  }
+  .clear:after {
+    display: block;
+    height: 0;
+    content: "";
+    clear: both
   }
 </style>
