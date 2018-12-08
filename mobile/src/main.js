@@ -6,9 +6,9 @@ import router from './router'
 import qs from "qs"
 import store from "./store"
 
-// // 引入echarts
-// import echarts from 'echarts'
-// Vue.prototype.$echarts = echarts
+// 引入echarts
+import echarts from 'echarts'
+Vue.prototype.$echarts = echarts
 
 import { Toast,XDialog,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable} from 'vux'
 Vue.component('toast',Toast);
