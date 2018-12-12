@@ -23,11 +23,11 @@
       </div>
       <div class="select_status">
         <div class="name">筛选条件：</div>
-        <div class="status">
-          <p><i></i></p>已收款
+        <div class="status" @click="changeStatus(0)">
+          <p><i v-if="status=='0'"></i></p>已收款
         </div>
-        <div class="status">
-          <p></p>已退款
+        <div class="status" @click="changeStatus(1)">
+          <p><i v-if="status=='1'"></i></p>已退款
         </div>
       </div>
       <tab v-model="index" :line-width="2" :active-color="'#105ba7'" :default-color="'#000'" :bar-active-color="'#105ba7'"
@@ -48,18 +48,6 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in dataList">
-          <td>{{item.date}}</td>
-          <td>{{item.villageName}}</td>
-          <td>{{item.thisFeePrice}}</td>
-          <td>{{item.feeTb}}</td>
-        </tr>
-        <tr v-for="item in dataList">
-          <td>{{item.date}}</td>
-          <td>{{item.villageName}}</td>
-          <td>{{item.thisFeePrice}}</td>
-          <td>{{item.feeTb}}</td>
-        </tr>
         <tr v-for="item in dataList">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
@@ -87,25 +75,17 @@
         page: 1,
         rows: 10,
         index: 0,
+        status: 0,
         dataList: []
       }
     },
     created() {
       this.getDate();
       this.getFeeData()
-      // window.addEventListener('scroll', this.onScroll);
+      window.addEventListener('scroll', this.onScroll);
     },
     mounted(){
-      // this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
-      this.$refs.conStyle.addEventListener('scroll', () => {
-        console.log(111)
-        this.scrollFn()
-        // console.log(" scroll " + this.$refs.viewBox.scrollTop)
-        // //以下是我自己的需求，向下滚动的时候显示“我是有底线的（类似支付宝）”
-        // this.isScroll=this.$refs.viewBox.scrollTop>0
-      }, false)
-      // 滚动区域的实际高度-滚动区域可见高度-向上滑动的高度
-      // document.querySelector('.vux-table').clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100)-document.documentElement.scrollTop
+      this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
     },
     methods: {
       getDate(){
@@ -131,11 +111,15 @@
         }
         this.$axios.get("/show/statistics/fee?fromTime="+formTime+"&ToTime="+ToTime+"&page="+this.page+"&rows="+this.rows)
           .then(res => {
-            this.dataList = res.data.rows;
+            this.count = res.data.total;
+            this.dataList = this.dataList.concat(res.data.rows);
           })
           .catch(error => {
 
           })
+      },
+      changeStatus(ind){
+        this.status = ind;
       },
       change(value) {
         console.log('change', value)
@@ -144,11 +128,16 @@
         console.log(str1, str2)
       },
       onConfirmStart(val) {
+        this.page=1;
+        this.dataList = [];
         this.startTime = val;
         this.getFeeData()
       },
       onConfirmEnd(val) {
+        this.page=1;
+        this.dataList = [];
         this.endTime = val;
+        this.getFeeData()
       },
       switchTabItem(index) {
         console.log('on-before-index-change', index);
@@ -170,21 +159,26 @@
         console.log(document.querySelector('.vux-table').clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100)-document.documentElement.scrollTop)
       },
       onScroll() {
-        console.log(11)
         //可滚动容器的高度
-        // console.log(document.querySelector('.vux-table').clientHeight)
-        let innerHeight = document.querySelector('.menu').clientHeight;                    //屏幕尺寸高度
-        let outerHeight = document.documentElement.clientHeight;                    //可滚动容器超出当前窗口显示范围的高度
+        let innerHeight = document.querySelector('.vux-table').clientHeight;                    //屏幕尺寸高度
+        let outerHeight = document.documentElement.clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100);                    //可滚动容器超出当前窗口显示范围的高度
         let scrollTop = document.documentElement.scrollTop;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
-        console.log(innerHeight + " " + outerHeight + " " + scrollTop);
-        if (innerHeight < (outerHeight + scrollTop)) {                        //加载更多操作
-          console.log("loadmore");
-          // this.data = this.data.concat(this.data);
+        if (innerHeight - (outerHeight + scrollTop)<70) {                        //加载更多操作
+
+          if(this.count > this.page*this.rows){
+            console.log("loadmore");
+            this.page++;
+            this.getFeeData()
+          }
+
         }
       },
       toDetail(id) {
         this.$router.push({path: '/orderDetail', query: {id: id, type: 2}})
       }
+    },
+    destroyed() {
+      window.removeEventListener('scroll', this.onScroll)
     }
   }
 </script>
