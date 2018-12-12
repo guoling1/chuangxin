@@ -3,15 +3,15 @@
     <img src="../assets/logo.png" alt="" class="login">
     <ul>
       <li>
-        <input v-model="formData.phone" type="number" placeholder="输入手机号">
+        <input v-model="formData.loginName" type="text" placeholder="请输入用户名">
       </li>
       <li >
-        <input v-model="formData.password" type="password" placeholder="输入密码">
+        <input v-model="formData.password" type="password" placeholder="请输入密码">
       </li>
     </ul>
     <div class="btn-group">
       <div class="submit" @click="login()">登陆</div>
-      <div class="cancel">清除</div>
+      <div class="cancel" @click="clear">清除</div>
     </div>
     <p class="name">邯郸创鑫房地产租售管理系统</p>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
@@ -24,41 +24,55 @@
       data(){
           return {
             formData:{
-              phone:'',
+              loginName:'',
               password:'',
             },
-            phoneReg:/^1[3|4|5|7|8][0-9]{9}$/,
+            phoneReg:/^1[3|4|5|6|7|8][0-9]{9}$/,
             showPrompt:false,
             promptMsg:''
           }
       },
+      created(){
+          console.log(localStorage.getItem('loginUser'))
+        if(localStorage.getItem('loginUser')){
+          this.formData.loginName = JSON.parse(localStorage.getItem('loginUser')).loginName
+        }
+      },
       methods:{
         login(){
-          if(!this.phoneReg.test(this.formData.phone)){
+          if(!this.formData.loginName||!this.formData.password){
+            this.showPrompt = true;
+            this.promptMsg = '请填写用户名和密码'
+          }
+          this.$axios.post("/loginH5",this.formData)
+            .then(res=>{
+              if(res.code=='200'){
+                // localStorage.setItem("token",res.data.token);
+                localStorage.setItem("loginUser",JSON.stringify(this.formData));
+                this.showPrompt = true;
+                this.promptMsg = res.msg;
+                let _this = this;
+                setTimeout(function () {
+                  _this.$router.push('/home')
+                },1000)
+              }else {
+                this.showPrompt = true;
+                this.promptMsg = res.msg
+              }
+            })
+          /*if(!this.phoneReg.test(this.formData.phone)){
             this.showPrompt = true;
             this.promptMsg = '请输入正确的手机号'
           }else {
-            let params = {
-              mobile:this.formData.phone,
-              password:this.formData.password
-            }
-            this.$axios.post("/open/oauth/login",params)
-              .then(res=>{
-                if(res.retCode=='0000'){
-                  localStorage.setItem("token",res.data.token);
-                  localStorage.setItem("phone",this.formData.phone);
-                  if(this.GLOBAL.isKDApp){
-                    window.aladdin.navigator.forward({url:'http://www.wojinxin.com/#/my'});
-                  }else{
-                    this.$router.push("/my")
-                  }
 
-                }else {
-                  this.showPrompt = true;
-                  this.promptMsg = res.retMsg
-                }
-              })
+          }*/
+        },
+        clear(){
+          this.formData = {
+            loginName:'',
+            password:'',
           }
+          localStorage.removeItem('loginUser')
         }
       }
     }

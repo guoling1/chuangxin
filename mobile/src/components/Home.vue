@@ -6,16 +6,16 @@
         <div class="date">2018年11月23日</div>
       </div>
       <div class="content">
-        <div class="price">38123.<span>02元</span></div>
+        <div class="price">{{topData.dayPrice}}<span>元</span></div>
         <div class="bottom">
           <div>
             <p>当月累计收益(元)</p>
-            <p>6265823</p>
+            <p>{{topData.monthPrice}}</p>
           </div>
           <i></i>
           <div>
             <p>全年累计(元)</p>
-            <p>6265823</p>
+            <p>{{topData.yearPrice}}</p>
           </div>
         </div>
       </div>
@@ -23,6 +23,20 @@
     <div class="pie">
       <img src="../assets/pie.png" alt="" class="chart-title">
       <div id="pieChart"></div>
+      <div class="data">
+        <div>
+          <span class="orange"></span>&ensp;
+          物业收益 {{pieData.feeDayPrice||0}}元
+        </div>
+        <div>
+          <span class="green"></span>&ensp;
+          租赁收益 {{pieData.leaseholdDayPrice||0}}元
+        </div>
+        <div>
+          <span class="blue"></span>&ensp;
+          已售收益 {{pieData.saleDayPrice||0}}元
+        </div>
+      </div>
     </div>
     <!--柱状图-->
     <div class="bar">
@@ -38,19 +52,100 @@
     name: 'Home',
     data() {
       return {
-        aspectRatio: 1.146,
-        list: [],
-        // swiperList: [{img: require('../assets/banner.png')}],
+        topData:{
+          dayPrice:0,
+          monthPrice:0,
+          yearPrice:0
+        },
+        pieData:{
+          feeDayPrice:0,
+          leaseholdDayPrice:0,
+          saleDayPrice:0
+        },
+        lastYear:[],
+        thisYear: []
       }
     },
     mounted() {
-      this.drawBar();  // 初始化
-      this.drawPie();  // 初始化
+      // this.drawBar();  // 初始化
     },
     created() {
-
+      this.getData()
+      this.getBarData()
     },
     methods: {
+      getData() {
+        this.$axios.get("/show/statistics/mainDetail")
+          .then(res => {
+            if(res.code=='200'){
+              this.pieData.feeDayPrice = res.data[0].feeDayPrice;
+              this.pieData.leaseholdDayPrice = res.data[0].leaseholdDayPrice;
+              this.pieData.saleDayPrice = res.data[0].saleDayPrice;
+              this.topData.dayPrice = res.data[0].dayPrice||0;
+              this.topData.monthPrice = res.data[0].monthPrice||0;
+              this.topData.yearPrice = res.data[0].yearPrice||0;
+              this.drawPie();  // 初始化饼图
+            }
+          })
+          .catch(error => {
+
+          })
+      },
+      getBarData() {
+        this.$axios.get("/show/statistics/mainContrast")
+          .then(res => {
+            if(res.code=='200'){
+              let data = res.data;
+              for(let i=0;i<data.length;i++){
+                this.thisYear.push(data[i].feeMonthPrice+data[i].saleMonthPrice+data[i].leaseholdMonthPrice)
+                this.lastYear.push(data[i].feeMonthPriceLast+data[i].saleMonthPriceLast+data[i].leaseholdMonthPriceLast)
+              }
+              this.drawBar()
+            }
+          })
+          .catch(error => {
+
+          })
+      },
+      drawPie() {
+        // 基于准备好的dom，初始化echarts实例
+        let pieChart = this.$echarts.init(document.getElementById('pieChart'))
+        // 绘制图表
+        pieChart.setOption({
+          legend: {
+            data:['物业','租赁','已售'],
+            itemGap: 30,
+            textStyle:{
+              fontWeight:"bold",
+              color:"#666"
+            }
+          },
+          color: ["#ffa16d", "#83c7c9", "#8896f4"],
+          series : [
+            {
+              name:'访问来源',
+              type:'pie',
+              radius : '70%',
+              center: ['25%', '52%'],
+              itemStyle : {
+                normal : {
+                  label : {
+                    show : false
+                  },
+                  labelLine : {
+                    show : false
+                  }
+                }
+              },
+              data:[
+                {value:this.pieData.feeDayPrice, name:'物业'},
+                {value:this.pieData.leaseholdDayPrice, name:'租赁'},
+                {value:this.pieData.saleDayPrice, name:'已售'},
+              ]
+            }
+          ]
+        });
+      },
       drawBar() {
         // 基于准备好的dom，初始化echarts实例
         let myChart = this.$echarts.init(document.getElementById('barChart'))
@@ -115,59 +210,20 @@
             silent: true,
             barWidth: 8,
             // barGap: '100%', // Make series be overlap
-            data: [20, 60, 60],
+            data: this.thisYear,
 
           }, {
             name: '去年',
             type: 'bar',
             barWidth: 8,
             z: 10,
-            data: [45, 60, 13],
+            data: this.lastYear,
             itemStyle: {
               normal: {
                 color: '#ffb19c',
               }
             },
           }]
-        });
-      },
-      drawPie() {
-        // 基于准备好的dom，初始化echarts实例
-        let pieChart = this.$echarts.init(document.getElementById('pieChart'))
-        // 绘制图表
-        pieChart.setOption({
-          legend: {
-            data:['物业','租赁','已售'],
-            itemGap: 30,
-            textStyle:{
-              fontWeight:"bold",
-              color:"#666"
-            }
-          },
-          color: ["#ffa16d", "#83c7c9", "#8896f4"],
-          series : [
-            {
-              name:'访问来源',
-              type:'pie',
-              radius : '70%',
-              center: ['25%', '52%'],
-              itemStyle : {
-                normal : {
-                  label : {
-                    show : false
-                  },
-                  labelLine : {
-                    show : false
-                  }
-                }
-              },
-              data:[
-                {value:335, name:'物业'},
-                {value:310, name:'租赁'},
-                {value:234, name:'已售'},
-              ]
-            }
-          ]
         });
       }
     }
@@ -240,12 +296,41 @@
     }
     /*饼图*/
     .pie{
+      position: relative;
       margin: 0 auto;
       width: 90%;
       height: 264px;
       #pieChart{
         width: 100%;
         height: 190px;
+      }
+
+      .data{
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        font-size: 14px;
+        font-weight: bold;
+        div{
+          margin-bottom: 24px;
+        }
+        span{
+          display: inline-block;
+          width: 8px;
+          height: 8px;
+          border-radius: 50px;
+          background: #ddd;
+
+          &.orange{
+            background: #ffa16d;
+          }
+          &.green{
+            background: #83c7c9;
+          }
+          &.blue{
+            background: #8896f4;
+          }
+        }
       }
     }
     /*柱状图*/

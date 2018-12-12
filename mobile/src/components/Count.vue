@@ -3,21 +3,21 @@
     <div class="noScroll">
       <div class="top">
         <img src="../assets/count-tit.png" alt="" class="top_title">
-        <div class="date">{{date}}</div>
+        <div class="date">{{date}} 星期{{week}}</div>
       </div>
       <div class="select_time">
         <datetime
           v-model="startTime"
           @on-change="change"
           @on-cancel="log('cancel')"
-          @on-confirm="onConfirm"
+          @on-confirm="onConfirmStart"
           @on-hide="log('hide', $event)"></datetime>
         ~
         <datetime
           v-model="endTime"
           @on-change="change"
           @on-cancel="log('cancel')"
-          @on-confirm="onConfirm"
+          @on-confirm="onConfirmEnd"
           @on-hide="log('hide', $event)"></datetime>
         <img src="../assets/calendar.png" alt="">
       </div>
@@ -32,9 +32,9 @@
       </div>
       <tab v-model="index" :line-width="2" :active-color="'#105ba7'" :default-color="'#000'" :bar-active-color="'#105ba7'"
            custom-bar-width="62px" prevent-default @on-before-index-change="switchTabItem">
-        <tab-item selected>已发货</tab-item>
-        <tab-item>未发货</tab-item>
-        <tab-item>全部订单</tab-item>
+        <tab-item selected>物业</tab-item>
+        <tab-item>租赁</tab-item>
+        <tab-item>销售</tab-item>
       </tab>
     </div>
     <div class="scrollCon" ref="conStyle">
@@ -48,17 +48,29 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in data">
+        <tr v-for="item in dataList">
           <td>{{item.date}}</td>
-          <td>{{item.address}}</td>
-          <td>{{item.income}}</td>
-          <td>{{item.ratio}}</td>
+          <td>{{item.villageName}}</td>
+          <td>{{item.thisFeePrice}}</td>
+          <td>{{item.feeTb}}</td>
+        </tr>
+        <tr v-for="item in dataList">
+          <td>{{item.date}}</td>
+          <td>{{item.villageName}}</td>
+          <td>{{item.thisFeePrice}}</td>
+          <td>{{item.feeTb}}</td>
+        </tr>
+        <tr v-for="item in dataList">
+          <td>{{item.date}}</td>
+          <td>{{item.villageName}}</td>
+          <td>{{item.thisFeePrice}}</td>
+          <td>{{item.feeTb}}</td>
         </tr>
         </tbody>
       </x-table>
     </div>
 
-    <loading v-model="a" text="加载中"></loading>
+    <loading v-model="isLoad" text="加载中"></loading>
   </div>
 </template>
 
@@ -67,79 +79,59 @@
     name: 'Count',
     data() {
       return {
-        a: false,
-        date: '2018年11月23日 星期五',
+        isLoad: false,
+        date: '',
+        week: '',
         startTime: '选择开始时间',
         endTime: '选择截止时间',
-        confirmColor: '#105ba7',
+        page: 1,
+        rows: 10,
         index: 0,
-        data: [{
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }, {
-          date: '2018/11/01',
-          address: '创鑫华府',
-          income: 10032,
-          ratio: '12%'
-        }],
-        orderList: []
+        dataList: []
       }
     },
     created() {
-      // this.getData()
-      window.addEventListener('scroll', this.onScroll);
+      this.getDate();
+      this.getFeeData()
+      // window.addEventListener('scroll', this.onScroll);
     },
     mounted(){
-      this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
+      // this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
+      this.$refs.conStyle.addEventListener('scroll', () => {
+        console.log(111)
+        this.scrollFn()
+        // console.log(" scroll " + this.$refs.viewBox.scrollTop)
+        // //以下是我自己的需求，向下滚动的时候显示“我是有底线的（类似支付宝）”
+        // this.isScroll=this.$refs.viewBox.scrollTop>0
+      }, false)
+      // 滚动区域的实际高度-滚动区域可见高度-向上滑动的高度
+      // document.querySelector('.vux-table').clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100)-document.documentElement.scrollTop
     },
     methods: {
-      //获取订单列表
-      getData() {
-        this.$axios.post("/open/api/order/list", {mobile: JSON.parse(localStorage.getItem("userMessage")).mobile})
+      getDate(){
+        let year = new Date().getFullYear();
+        let month = new Date().getMonth()+1>10?new Date().getMonth()+1:'0'+new Date().getMonth()+1;
+        let date = new Date().getDate()>10?new Date().getDate():'0'+new Date().getDate();
+        this.date = year+'-'+month+'-'+date;
+        let week = ['日','一','二','三','四','五','六'];
+        this.week = week[new Date().getDay()]
+      },
+      //获取物业费
+      getFeeData() {
+        let formTime,ToTime;
+        if(this.startTime=="选择开始时间"){
+          formTime = this.date;
+        }else {
+          formTime = this.startTime;
+        }
+        if(this.endTime=="选择截止时间"){
+          ToTime = this.date;
+        }else {
+          ToTime = this.endTime;
+        }
+        this.$axios.get("/show/statistics/fee?fromTime="+formTime+"&ToTime="+ToTime+"&page="+this.page+"&rows="+this.rows)
           .then(res => {
-            for (let i = 0; i < res.data.list.length; i++) {
-              if (!res.data.list[i].swiperList || res.data.list[i].swiperList.length == 0) {
-                res.data.list[i].swiperList = [{url: ''}]
-              }
-            }
-            this.orderList = res.data.list;
+            this.dataList = res.data.rows;
           })
           .catch(error => {
 
@@ -151,17 +143,31 @@
       log(str1, str2 = '') {
         console.log(str1, str2)
       },
-      onConfirm(val) {
-        console.log('on-confirm arg', val)
-        console.log('current value', this.value1)
+      onConfirmStart(val) {
+        this.startTime = val;
+        this.getFeeData()
+      },
+      onConfirmEnd(val) {
+        this.endTime = val;
       },
       switchTabItem(index) {
         console.log('on-before-index-change', index);
-        this.a = true
+        this.isLoad = true
         setTimeout(() => {
-          this.a = false
-          this.index = index
+          this.isLoad = false;
+          if(index==0){
+            this.getFeeData();
+          }else if(index==1){
+            this.getHoldData();
+          }else if(index==2){
+            this.getSaleData();
+          }
+          this.index = index;
         }, 1000)
+      },
+      scrollFn(){
+        console.log(111)
+        console.log(document.querySelector('.vux-table').clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100)-document.documentElement.scrollTop)
       },
       onScroll() {
         console.log(11)
@@ -173,7 +179,7 @@
         console.log(innerHeight + " " + outerHeight + " " + scrollTop);
         if (innerHeight < (outerHeight + scrollTop)) {                        //加载更多操作
           console.log("loadmore");
-          this.data = this.data.concat(this.data);
+          // this.data = this.data.concat(this.data);
         }
       },
       toDetail(id) {
@@ -298,6 +304,10 @@
 
   .vux-table {
     margin-top: -1px;
+  }
+  tbody{
+    font-size: 12px;
+    font-weight: bold;
   }
 
   .vux-tab .vux-tab-item {

@@ -1,13 +1,15 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
-      <!--<div class="back" @click="back()" v-if="this.$route.name!='home'">-->
-        <!--<img src="./assets/back.png" alt="">-->
-        <!--<span>返回</span>-->
-      <!--</div>-->
+      <!--<div class="back" @click="back()" v-if="this.$route.name!='home'">
+        <img src="./assets/back.png" alt="">
+        <span>返回</span>
+      </div>-->
       <h1>{{title}}</h1>
+      <div class="logout" @click="logout()" v-if="this.$route.name!='login'">退出</div>
     </div>
     <router-view style="marginTop:50px"/>
+    <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
 </template>
 
@@ -17,13 +19,32 @@
     data() {
       return {
         title: '创鑫地产',
-        keepAlive: ''
+        keepAlive: '',
+        showPrompt:false,
+        promptMsg:''
       }
     },
     created() {
 
     },
     methods: {
+      logout(){
+        this.$axios.get('/logoutH5')
+          .then(res=>{
+            if(res.code=='200'){
+              this.showPrompt = true;
+              this.promptMsg = res.msg;
+              let _this = this;
+              setTimeout(function () {
+                _this.$router.push('/login')
+              },1000)
+            }
+          })
+          .catch(err=>{
+            this.showPrompt = true;
+            this.promptMsg = err;
+          })
+      },
       back() {
         this.$router.go(-1)
       }
@@ -71,6 +92,12 @@
       font-weight: bold;
       font-size: 19px;
       line-height: 24px;
+    }
+
+    .logout{
+      position: absolute;
+      right: 0.3rem;
+      top: 33%;
     }
   }
 

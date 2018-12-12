@@ -23,8 +23,8 @@ Vue.component('x-table', XTable)
 Vue.config.productionTip = false;
 
 import axios from 'axios'
-axios.defaults.baseURL = "http://www.wojinxin.com/wofinance";
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.baseURL = "/api";
+// axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios= axios;
 
 // 全局过滤器
@@ -71,16 +71,10 @@ axios.interceptors.response.use(
     let {status,data} = response;
     if(status == 200) {
       // response.data = data.retObject||data;
-      response.data = data.retObject;
-      if(data.retCode=='1006'){
-        router.replace({
-          path: '/regist',
-          query: {redirect: router.currentRoute.fullPath}
-        })
-      }
+      response.data = data.data;
     }
-    response.retMsg = data.retMsg;
-    response.retCode = data.retCode;
+    response.msg = data.msg;
+    response.code = data.code;
     return response;
   },
   error => {
