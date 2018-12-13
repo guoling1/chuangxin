@@ -73,6 +73,9 @@ axios.interceptors.response.use(
       // response.data = data.retObject||data;
       response.data = data.data;
     }
+    if(status == 302){
+      this.$router.push('/login')
+    }
     response.msg = data.msg;
     response.code = data.code;
     return response;

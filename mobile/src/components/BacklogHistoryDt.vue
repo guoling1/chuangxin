@@ -1,9 +1,5 @@
 <template>
-  <div class="main">
-    <div class="top">
-      <img src="../assets/backlog-tit.png" alt="" class="top_title">
-      <div class="date">{{date}}</div>
-    </div>
+  <div class="main" style="padding-top: 30px">
     <p class="name">{{data.communityName}}{{data.positionE}}{{data.merchantHouseNumber}}退款申请</p>
     <p class="time">{{data.returnPayTimeE}}</p>
     <p class="people">提交人：{{data.returnUserId}}</p>
@@ -25,6 +21,14 @@
         <span>{{data.area}}m²</span>
       </li>
       <li>
+        <span>退费类型：</span>
+        <span>{{examineType}}</span>
+      </li>
+      <li>
+        <span>收费时间：</span>
+        <span>{{data.changeTime}}</span>
+      </li>
+      <li>
         <span>已收费用：</span>
         <span>{{data.changeMoneyE}}元</span>
       </li>
@@ -32,15 +36,24 @@
         <span>退款费用：</span>
         <span>{{data.changeReturnMoneyE}}元</span>
       </li>
+
       <li>
-        <span>备注：</span>
+        <span>退费备注：</span>
         <span>{{data.saleReturnRemarkE}}</span>
       </li>
+      <li>
+        <span>审核时间：</span>
+        <span>{{data.examinePayTimeE}}</span>
+      </li>
+      <li>
+        <span>审核人员：</span>
+        <span>{{data.examineUserId}}</span>
+      </li>
+      <li>
+        <span>审核备注：</span>
+        <span>{{data.saleExamineRemarkE}}</span>
+      </li>
     </ul>
-    <div class="btnGroup">
-      <div class="sure">同意</div>
-      <div class="refuse" @click="refuse">拒绝</div>
-    </div>
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
@@ -48,11 +61,10 @@
 
 <script>
   export default {
-    name: 'Count',
+    name: 'BacklogHistoryDt',
     data() {
       return {
         isLoad: false,
-        date:'',
         url: '',
         data: [],
         showPrompt: false,
@@ -61,36 +73,31 @@
     },
     created() {
       let type = this.$route.query.type;
-      console.log(type)
       switch (Number(type)) {
         case 1:
           this.url = '/show/statistics/examine/sale';
+          this.examineType = "销售";
           break;
         case 2:
           this.url = '/show/statistics/examine/leasehold';
+          this.examineType = "租赁";
           break;
         case 3:
           this.url = '/show/statistics/examine/water';
+          this.examineType = "水";
           break;
         case 4:
           this.url = '/show/statistics/examine/ectricity';
+          this.examineType = "电";
           break;
         case 5:
           this.url = '/show/statistics/examine/fee';
+          this.examineType = "物业";
           break;
       }
-      this.getDate();
       this.getData();
     },
     methods: {
-      getDate() {
-        let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
-        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
-        this.date = year + '-' + month + '-' + date;
-        let week = ['日', '一', '二', '三', '四', '五', '六'];
-        this.week = week[new Date().getDay()]
-      },
       //获取订单列表
       getData() {
         this.isLoad = true;
@@ -104,9 +111,6 @@
             this.promptMsg = error;
             this.isLoad = false;
           })
-      },
-      refuse(id) {
-        this.$router.push({path: '/backlogSubmit', query: {id: 1, type: 2}})
       }
     }
   }

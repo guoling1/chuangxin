@@ -8,17 +8,13 @@
       <div class="select_time">
         <datetime
           v-model="startTime"
-          @on-change="change"
-          @on-cancel="log('cancel')"
-          @on-confirm="onConfirmStart"
-          @on-hide="log('hide', $event)"></datetime>
+          :end-date="endDate"
+          @on-confirm="onConfirmStart"></datetime>
         ~
         <datetime
           v-model="endTime"
-          @on-change="change"
-          @on-cancel="log('cancel')"
-          @on-confirm="onConfirmEnd"
-          @on-hide="log('hide', $event)"></datetime>
+          :start-date="startDate"
+          @on-confirm="onConfirmEnd"></datetime>
         <img src="../assets/calendar.png" alt="">
       </div>
       <div class="select_status">
@@ -30,7 +26,8 @@
           <p><i v-if="status=='1'"></i></p>已退款
         </div>
       </div>
-      <tab v-model="index" :line-width="2" :active-color="'#105ba7'" :default-color="'#000'" :bar-active-color="'#105ba7'"
+      <tab v-model="index" :line-width="2" :active-color="'#105ba7'" :default-color="'#000'"
+           :bar-active-color="'#105ba7'"
            custom-bar-width="62px" prevent-default @on-before-index-change="switchTabItem">
         <tab-item selected>物业</tab-item>
         <tab-item>租赁</tab-item>
@@ -43,22 +40,27 @@
         <tr>
           <th>时间</th>
           <th>小区</th>
-          <th>收益</th>
-          <th>同比</th>
+          <th v-if="status=='0'">收益</th>
+          <th v-if="status=='0'">同比</th>
+          <th v-if="status=='1'">退款</th>
+          <th v-if="status=='1'">同比</th>
         </tr>
         </thead>
         <tbody>
         <tr v-for="item in dataList">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
-          <td>{{item.thisFeePrice}}</td>
-          <td>{{item.feeTb}}</td>
+          <td v-if="status=='0'">{{item.thisFeePrice}}</td>
+          <td v-if="status=='0'" :class="item.numStatus?'red':'green'">{{item.numStatus?'↑':'↓'}}{{item.feeTb}}%</td>
+          <td v-if="status=='1'">{{item.thisFeePrice1}}</td>
+          <td v-if="status=='1'" :class="item.numStatus1?'red':'green'">{{item.numStatus1?'↑':'↓'}}{{item.feeTb1}}%</td>
         </tr>
         </tbody>
       </x-table>
     </div>
 
     <loading v-model="isLoad" text="加载中"></loading>
+    <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
 </template>
 
@@ -67,114 +69,125 @@
     name: 'Count',
     data() {
       return {
-        isLoad: false,
         date: '',
         week: '',
         startTime: '选择开始时间',
+        startDate: '1970-01-01',
         endTime: '选择截止时间',
+        endDate: '2222-12-31',
         page: 1,
         rows: 10,
         index: 0,
         status: 0,
-        dataList: []
+        dataList: [],
+        isLoad: false,
+        showPrompt: false,
+        promptMsg: '',
+        url:'/show/statistics/fee'
       }
     },
     created() {
       this.getDate();
-      this.getFeeData()
+      this.getData()
       window.addEventListener('scroll', this.onScroll);
     },
-    mounted(){
-      this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
+    mounted() {
+      // this.$refs.conStyle.style.marginTop = (document.querySelector('.noScroll').clientHeight) + "px";
     },
     methods: {
-      getDate(){
+      getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth()+1>10?new Date().getMonth()+1:'0'+new Date().getMonth()+1;
-        let date = new Date().getDate()>10?new Date().getDate():'0'+new Date().getDate();
-        this.date = year+'-'+month+'-'+date;
-        let week = ['日','一','二','三','四','五','六'];
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
+        this.date = year + '-' + month + '-' + date;
+        let week = ['日', '一', '二', '三', '四', '五', '六'];
         this.week = week[new Date().getDay()]
       },
-      //获取物业费
-      getFeeData() {
-        let formTime,ToTime;
-        if(this.startTime=="选择开始时间"){
+      getData() {
+        this.isLoad = true;
+        let formTime, ToTime;
+        if (this.startTime == "选择开始时间") {
           formTime = this.date;
-        }else {
+        } else {
           formTime = this.startTime;
         }
-        if(this.endTime=="选择截止时间"){
+        if (this.endTime == "选择截止时间") {
           ToTime = this.date;
-        }else {
+        } else {
           ToTime = this.endTime;
         }
-        this.$axios.get("/show/statistics/fee?fromTime="+formTime+"&ToTime="+ToTime+"&page="+this.page+"&rows="+this.rows)
+        if (this.page == 1) {
+          this.dataList = [];
+        }
+        this.$axios.get(this.url+"?fromTime=" + formTime + "&ToTime=" + ToTime + "&page=" + this.page + "&rows=" + this.rows)
           .then(res => {
             this.count = res.data.total;
+            for (let i = 0; i < res.data.rows.length; i++) {
+              res.data.rows[i].date = formTime + '至' + ToTime;
+              if(res.data.rows[i].feeTb<0){
+                res.data.rows[i].feeTb=res.data.rows[i].feeTb.replace('-','');
+                res.data.rows[i].numStatus=false
+              }else {
+                res.data.rows[i].numStatus=true
+              }
+              if(res.data.rows[i].feeTb1<0){
+                res.data.rows[i].feeTb1=res.data.rows[i].feeTb1.replace('-','');
+                res.data.rows[i].numStatus1=false
+              }else {
+                res.data.rows[i].numStatus1=true
+              }
+            }
             this.dataList = this.dataList.concat(res.data.rows);
+            this.isLoad = false;
           })
           .catch(error => {
-
+            this.showPrompt = true;
+            this.promptMsg = error;
+            this.isLoad = false;
           })
       },
-      changeStatus(ind){
+      changeStatus(ind) {
         this.status = ind;
-      },
-      change(value) {
-        console.log('change', value)
-      },
-      log(str1, str2 = '') {
-        console.log(str1, str2)
+        this.page = 1;
+        this.getData()
       },
       onConfirmStart(val) {
-        this.page=1;
-        this.dataList = [];
+        this.page = 1;
+        this.startDate = this.startTime
         this.startTime = val;
-        this.getFeeData()
+        this.getData()
       },
       onConfirmEnd(val) {
-        this.page=1;
-        this.dataList = [];
+        this.page = 1;
+        this.endDate = this.endTime
         this.endTime = val;
-        this.getFeeData()
+        this.getData()
       },
       switchTabItem(index) {
-        console.log('on-before-index-change', index);
-        this.isLoad = true
-        setTimeout(() => {
-          this.isLoad = false;
-          if(index==0){
-            this.getFeeData();
-          }else if(index==1){
-            this.getHoldData();
-          }else if(index==2){
-            this.getSaleData();
-          }
-          this.index = index;
-        }, 1000)
-      },
-      scrollFn(){
-        console.log(111)
-        console.log(document.querySelector('.vux-table').clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100)-document.documentElement.scrollTop)
+        // this.isLoad = true;
+        if (index == 0) {
+          this.url="/show/statistics/fee";
+        } else if (index == 1) {
+          this.url="/show/statistics/leasehold";
+        } else if (index == 2) {
+          this.url="/show/statistics/sale";
+        }
+        this.page = 1;
+        this.index = index;
+        this.getData()
       },
       onScroll() {
         //可滚动容器的高度
         let innerHeight = document.querySelector('.vux-table').clientHeight;                    //屏幕尺寸高度
-        let outerHeight = document.documentElement.clientHeight-(document.documentElement.clientHeight-document.querySelector('.noScroll').clientHeight-100);                    //可滚动容器超出当前窗口显示范围的高度
+        let outerHeight = document.documentElement.clientHeight - (document.documentElement.clientHeight - document.querySelector('.noScroll').clientHeight - 100);                    //可滚动容器超出当前窗口显示范围的高度
         let scrollTop = document.documentElement.scrollTop;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
-        if (innerHeight - (outerHeight + scrollTop)<70) {                        //加载更多操作
-
-          if(this.count > this.page*this.rows){
+        if (innerHeight - (outerHeight + scrollTop) < 70) {                        //加载更多操作
+          if (this.count > this.page * this.rows) {
             console.log("loadmore");
             this.page++;
-            this.getFeeData()
+            this.getData()
           }
-
         }
-      },
-      toDetail(id) {
-        this.$router.push({path: '/orderDetail', query: {id: id, type: 2}})
       }
     },
     destroyed() {
@@ -186,12 +199,22 @@
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 
 <style scoped lang="less" type="text/less">
-  .noScroll{
+  .noScroll {
     position: fixed;
     width: 100%;
     background: #fff;
     z-index: 1;
   }
+  .scrollCon{
+    margin-top: 202px;
+  }
+  .red{
+    color: #db1919;
+  }
+  .green{
+    color: #59dd8a;
+  }
+
   .main {
     /*margin: 50px 0;*/
     width: 100%;
@@ -299,7 +322,8 @@
   .vux-table {
     margin-top: -1px;
   }
-  tbody{
+
+  tbody {
     font-size: 12px;
     font-weight: bold;
   }
@@ -310,5 +334,9 @@
 
   .vux-table td:before, .vux-table th:before {
     border-bottom: none !important;
+  }
+
+  .vux-table td:first-child {
+    width: 93px;
   }
 </style>

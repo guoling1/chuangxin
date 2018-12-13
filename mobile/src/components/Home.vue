@@ -44,6 +44,8 @@
       <div id="barChart"></div>
     </div>
 
+    <loading v-model="isLoad" text="加载中"></loading>
+    <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
 </template>
 
@@ -63,7 +65,10 @@
           saleDayPrice:0
         },
         lastYear:[],
-        thisYear: []
+        thisYear: [],
+        isLoad: false,
+        showPrompt:false,
+        promptMsg:''
       }
     },
     mounted() {
@@ -75,6 +80,7 @@
     },
     methods: {
       getData() {
+        this.isLoad = true;
         this.$axios.get("/show/statistics/mainDetail")
           .then(res => {
             if(res.code=='200'){
@@ -85,6 +91,7 @@
               this.topData.monthPrice = res.data[0].monthPrice||0;
               this.topData.yearPrice = res.data[0].yearPrice||0;
               this.drawPie();  // 初始化饼图
+              this.isLoad = false;
             }
           })
           .catch(error => {
@@ -104,7 +111,9 @@
             }
           })
           .catch(error => {
-
+            this.showPrompt = true;
+            this.promptMsg = error;
+            this.isLoad = false;
           })
       },
       drawPie() {

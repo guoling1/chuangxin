@@ -1,19 +1,12 @@
 <template>
   <div class="main">
     <div class="noScroll">
-      <div class="top">
-        <img src="../assets/backlog-tit.png" alt="" class="top_title">
-        <div class="date">
-          <span>{{date}} 星期{{week}}</span>
-          <router-link to="/backlogHistory" class="history" >历史消息</router-link>
-        </div>
-      </div>
       <tab :line-width="2" :active-color="'#105ba7'" :default-color="'#000'" :bar-active-color="'#105ba7'">
-        <tab-item selected @on-item-click="switchTabItem(5)">物业</tab-item>
-        <tab-item @on-item-click="switchTabItem(2)">租赁</tab-item>
-        <tab-item @on-item-click="switchTabItem(1)">销售</tab-item>
-        <tab-item @on-item-click="switchTabItem(3)">水</tab-item>
-        <tab-item @on-item-click="switchTabItem(4)">电</tab-item>
+        <!--<tab-item selected @on-item-click="switchTabItem(5)">审核中</tab-item>-->
+        <tab-item selected @on-item-click="switchTabItem(4)">通过</tab-item>
+        <tab-item @on-item-click="switchTabItem(3)">不通过</tab-item>
+        <!--<tab-item @on-item-click="switchTabItem(3)">水</tab-item>
+        <tab-item @on-item-click="switchTabItem(4)">电</tab-item>-->
       </tab>
     </div>
     <div class="scrollCon">
@@ -46,6 +39,7 @@
         date: '',
         week: '',
         examineType: 5,
+        examineFlag:4,
         page: 1,
         rows: 10,
         dataList: [],
@@ -55,7 +49,6 @@
       }
     },
     created() {
-      this.getDate();
       this.getData();
       window.addEventListener('scroll', this.onScroll);
     },
@@ -63,21 +56,12 @@
       // this.$refs.conStyle.style.marginTop=(document.querySelector('.noScroll').clientHeight)+"px";
     },
     methods: {
-      getDate() {
-        let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
-        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
-        this.date = year + '-' + month + '-' + date;
-        let week = ['日', '一', '二', '三', '四', '五', '六'];
-        this.week = week[new Date().getDay()]
-      },
       getData() {
         this.isLoad = true;
         if (this.page == 1) {
           this.dataList = [];
         }
-
-        this.$axios.get("/show/statistics/examine?examineFlag=2&examineType=" + this.examineType+ "&page=" + this.page + "&rows=" + this.rows)
+        this.$axios.get("/show/statistics/examine?examineFlag=" + this.examineFlag+ "&page=" + this.page + "&rows=" + this.rows)
           .then(res => {
             this.count = res.data.total;
             this.dataList = this.dataList.concat(res.data.rows);
@@ -146,8 +130,6 @@
 
       .history{
         float: right;
-        color: #333;
-        font-weight: bold;
       }
     }
 

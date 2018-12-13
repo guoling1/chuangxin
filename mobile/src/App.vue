@@ -1,10 +1,10 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
-      <!--<div class="back" @click="back()" v-if="this.$route.name!='home'">
+      <div class="back" @click="back()" v-if="this.$route.name!='home'&&this.$route.name!='count'&&this.$route.name!='backlog'">
         <img src="./assets/back.png" alt="">
         <span>返回</span>
-      </div>-->
+      </div>
       <h1>{{title}}</h1>
       <div class="logout" @click="logout()" v-if="this.$route.name!='login'">退出</div>
     </div>
@@ -79,8 +79,8 @@
 
       img {
         display: inline-block;
-        width: 11px;
         height: 19px;
+        width: auto;
       }
 
       span {

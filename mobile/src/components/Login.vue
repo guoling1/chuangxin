@@ -60,12 +60,6 @@
                 this.promptMsg = res.msg
               }
             })
-          /*if(!this.phoneReg.test(this.formData.phone)){
-            this.showPrompt = true;
-            this.promptMsg = '请输入正确的手机号'
-          }else {
-
-          }*/
         },
         clear(){
           this.formData = {

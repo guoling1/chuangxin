@@ -7,6 +7,8 @@ import Backlog from '@/components/Backlog'
 import BacklogDetail from '@/components/BacklogDetail'
 import BacklogSubmit from '@/components/BacklogSubmit'
 import Login from '@/components/Login'
+import BacklogHistory from "../components/BacklogHistory";
+import BacklogHistoryDt from "../components/BacklogHistoryDt";
 
 Vue.use(Router)
 
@@ -58,6 +60,22 @@ export default new Router({
         title:"待办事项"
       },
       component:BacklogSubmit
+    },
+    {
+      path:'/backlogHistory',
+      name:'backlogHistory',
+      meta:{
+        title:"历史消息"
+      },
+      component:BacklogHistory
+    },
+    {
+      path:'/backlogHistoryDt',
+      name:'backlogHistoryDt',
+      meta:{
+        title:"历史消息"
+      },
+      component:BacklogHistoryDt
     },
     {
       path:'/login',
