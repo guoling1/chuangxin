@@ -4,10 +4,16 @@
       <img src="../assets/backlog-tit.png" alt="" class="top_title">
       <div class="date">{{date}}</div>
     </div>
-    <textarea></textarea>
-    <div class="btn">提交</div>
+    <textarea v-model="saleExamineRemarkE"></textarea>
+    <div class="btn" @click="agree">提交</div>
 
-    <loading v-model="a" text="加载中"></loading>
+    <loading v-model="isLoad" text="加载中"></loading>
+    <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
+    <confirm v-model="agreeShow"
+             title="确认"
+             @on-confirm="onConfirm">
+      <p style="text-align:center;">拒绝退款吗？</p>
+    </confirm>
   </div>
 </template>
 
@@ -16,34 +22,64 @@
     name: 'Count',
     data() {
       return {
-        a: false,
-        date: '2018年11月23日 星期五',
-        index: 0,
-        orderList: []
+        date:'',
+        week:'',
+        isLoad: false,
+        agreeShow: false,
+        showPrompt: false,
+        promptMsg: '',
+        saleExamineRemarkE:''
       }
     },
     created() {
       // this.getData()
     },
     methods: {
-      //获取订单列表
-      getData() {
-        this.$axios.post("/open/api/order/list", {mobile: JSON.parse(localStorage.getItem("userMessage")).mobile})
-          .then(res => {
-            for (let i = 0; i < res.data.list.length; i++) {
-              if (!res.data.list[i].swiperList || res.data.list[i].swiperList.length == 0) {
-                res.data.list[i].swiperList = [{url: ''}]
-              }
+      getDate() {
+        let year = new Date().getFullYear();
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
+        this.date = year + '-' + month + '-' + date;
+        let week = ['日', '一', '二', '三', '四', '五', '六'];
+        this.week = week[new Date().getDay()]
+      },
+      agree(){
+        this.agreeShow = true;
+      },
+      onConfirm(){
+        this.isLoad = true;
+        let params = {
+          eId: this.data.eId,
+          peId: this.data.peId,
+          examineType: this.data.examineType,
+          examineFlag: this.data.examineFlag,
+          saleExamineRemarkE: this.saleExamineRemarkE
+        }
+        this.$axios.post("/sys/examine",params)
+          .then(res=>{
+            if(res.code=='200'){
+              this.isLoad = false;
+              this.showPrompt = true;
+              this.promptMsg = res.msg;
+              let _this = this;
+              setTimeout(function () {
+                _this.$router.go(-2)
+              },1000)
+            }else {
+              this.showPrompt = true;
+              this.promptMsg = res.msg
             }
-            this.orderList = res.data.list;
           })
-          .catch(error => {
-
+          .catch(err=>{
+            this.isLoad = false
+            this.showPrompt = true;
+            this.promptMsg = err;
+            let _this = this;
+            setTimeout(function () {
+              _this.$router.go(-2)
+            },1000)
           })
       },
-      toDetail(id) {
-        this.$router.push({path: '/orderDetail', query: {id: id, type: 2}})
-      }
     }
   }
 </script>
@@ -81,5 +117,10 @@
       color: #fff;
       border-radius: 8px;
     }
+  }
+</style>
+<style>
+  .weui-dialog__btn{
+    line-height: 48px !important;
   }
 </style>

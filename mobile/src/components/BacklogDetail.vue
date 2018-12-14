@@ -38,11 +38,16 @@
       </li>
     </ul>
     <div class="btnGroup">
-      <div class="sure">同意</div>
-      <div class="refuse" @click="refuse">拒绝</div>
+      <div class="sure" @click="agree()">同意</div>
+      <div class="refuse" @click="refuse()">拒绝</div>
     </div>
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
+    <confirm v-model="agreeShow"
+             title="确认"
+             @on-confirm="onConfirm">
+      <p style="text-align:center;">同意退款吗？</p>
+    </confirm>
   </div>
 </template>
 
@@ -51,17 +56,18 @@
     name: 'Count',
     data() {
       return {
-        isLoad: false,
         date:'',
+        week:'',
         url: '',
         data: [],
+        isLoad: false,
+        agreeShow: false,
         showPrompt: false,
         promptMsg: '',
       }
     },
     created() {
       let type = this.$route.query.type;
-      console.log(type)
       switch (Number(type)) {
         case 1:
           this.url = '/show/statistics/examine/sale';
@@ -91,7 +97,6 @@
         let week = ['日', '一', '二', '三', '四', '五', '六'];
         this.week = week[new Date().getDay()]
       },
-      //获取订单列表
       getData() {
         this.isLoad = true;
         this.$axios.get(this.url+"/"+this.$route.query.id)
@@ -100,13 +105,46 @@
             this.isLoad = false;
           })
           .catch(error => {
+            this.isLoad = false;
             this.showPrompt = true;
             this.promptMsg = error;
-            this.isLoad = false;
+
           })
       },
-      refuse(id) {
-        this.$router.push({path: '/backlogSubmit', query: {id: 1, type: 2}})
+      agree(){
+        this.agreeShow = true;
+      },
+      onConfirm(){
+        this.isLoad = true;
+        let params = {
+          eId: this.data.eId,
+          peId: this.data.peId,
+          examineType: this.data.examineType,
+          examineFlag: this.data.examineFlag,
+        }
+        this.$axios.post("/sys/examine",params)
+          .then(res=>{
+            if(res.code=='200'){
+              this.isLoad = false;
+              this.showPrompt = true;
+              this.promptMsg = res.msg;
+              let _this = this;
+              setTimeout(function () {
+                _this.$router.go(-1)
+              },1000)
+            }else {
+              this.showPrompt = true;
+              this.promptMsg = res.msg
+            }
+          })
+          .catch(err=>{
+            this.isLoad = false
+            this.showPrompt = true;
+            this.promptMsg = err;
+          })
+      },
+      refuse() {
+        this.$router.push({path: '/backlogSubmit', query: {eId: this.data.eId, peId: this.data.peId,examineType: this.data.examineType, examineFlag: this.data.examineFlag}})
       }
     }
   }
@@ -170,5 +208,10 @@
         background: #105ba7;
       }
     }
+  }
+</style>
+<style>
+  .weui-dialog__btn{
+    line-height: 48px !important;
   }
 </style>

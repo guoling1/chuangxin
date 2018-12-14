@@ -10,15 +10,15 @@ import store from "./store"
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
-import { Toast,XDialog,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable} from 'vux'
+import { Toast,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable,Confirm} from 'vux'
 Vue.component('toast',Toast);
-Vue.component('xDialog',XDialog);
 Vue.component('datetime',Datetime);
-Vue.component('tab', Tab)
-Vue.component('tab-item', TabItem)
-Vue.component('loading', Loading )
-Vue.component('loadingPlugin', LoadingPlugin)
-Vue.component('x-table', XTable)
+Vue.component('tab', Tab);
+Vue.component('tab-item', TabItem);
+Vue.component('loading', Loading );
+Vue.component('loadingPlugin', LoadingPlugin);
+Vue.component('x-table', XTable);
+Vue.component('confirm', Confirm);
 
 Vue.config.productionTip = false;
 
@@ -78,9 +78,11 @@ axios.interceptors.response.use(
     }
     response.msg = data.msg;
     response.code = data.code;
+    console.log(status)
     return response;
   },
   error => {
+    console.log(error)
     return Promise.reject('系统异常')   // 返回接口返回的错误信息
   });
 

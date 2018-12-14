@@ -14,6 +14,7 @@
       <div class="cancel" @click="clear">清除</div>
     </div>
     <p class="name">邯郸创鑫房地产租售管理系统</p>
+    <loading v-model="isLoad" text="登陆中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
 </template>
@@ -29,11 +30,11 @@
             },
             phoneReg:/^1[3|4|5|6|7|8][0-9]{9}$/,
             showPrompt:false,
-            promptMsg:''
+            promptMsg:'',
+            isLoad:false
           }
       },
       created(){
-          console.log(localStorage.getItem('loginUser'))
         if(localStorage.getItem('loginUser')){
           this.formData.loginName = JSON.parse(localStorage.getItem('loginUser')).loginName
         }
@@ -44,10 +45,12 @@
             this.showPrompt = true;
             this.promptMsg = '请填写用户名和密码'
           }
+          this.isLoad = true;
           this.$axios.post("/loginH5",this.formData)
             .then(res=>{
               if(res.code=='200'){
                 // localStorage.setItem("token",res.data.token);
+                this.isLoad = false
                 localStorage.setItem("loginUser",JSON.stringify(this.formData));
                 this.showPrompt = true;
                 this.promptMsg = res.msg;
@@ -59,6 +62,11 @@
                 this.showPrompt = true;
                 this.promptMsg = res.msg
               }
+            })
+            .catch(err=>{
+              this.isLoad = false
+              this.showPrompt = true;
+              this.promptMsg = err
             })
         },
         clear(){
