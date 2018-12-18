@@ -73,13 +73,18 @@ axios.interceptors.response.use(
       // response.data = data.retObject||data;
       response.data = data.data;
     }
-    if(status == 302){
-      this.$router.push('/login')
-    }
     response.msg = data.msg;
     response.code = data.code;
-    console.log(status)
-    return response;
+    if(data.code == '403'){
+      console.log(this)
+      router.replace({
+        path: 'login',
+      })
+      // this.$router.push('/login')
+    }else{
+      return response;
+    }
+
   },
   error => {
     console.log(error)

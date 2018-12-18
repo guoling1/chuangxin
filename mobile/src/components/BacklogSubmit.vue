@@ -49,10 +49,10 @@
       onConfirm(){
         this.isLoad = true;
         let params = {
-          eId: this.data.eId,
-          peId: this.data.peId,
-          examineType: this.data.examineType,
-          examineFlag: this.data.examineFlag,
+          eId: this.$route.query.eId,
+          peId: this.$route.query.peId,
+          examineType: this.$route.query.examineType,
+          examineFlag: 3,
           saleExamineRemarkE: this.saleExamineRemarkE
         }
         this.$axios.post("/sys/examine",params)

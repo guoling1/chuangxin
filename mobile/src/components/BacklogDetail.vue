@@ -120,7 +120,7 @@
           eId: this.data.eId,
           peId: this.data.peId,
           examineType: this.data.examineType,
-          examineFlag: this.data.examineFlag,
+          examineFlag: 4,
         }
         this.$axios.post("/sys/examine",params)
           .then(res=>{

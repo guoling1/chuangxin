@@ -74,7 +74,7 @@
           })
       },
       switchTabItem(num) {
-        this.examineType = num;
+        this.examineFlag = num;
         this.page = 1;
         this.getData()
       },
@@ -92,7 +92,7 @@
         }
       },
       toDetail(id,type) {
-        this.$router.push({path: '/backlogDetail', query: {id: id,type:type}})
+        this.$router.push({path: '/backlogHistoryDt', query: {id: id,type:type}})
       }
     }
   }
@@ -106,9 +106,6 @@
     width: 100%;
     background: #fff;
     z-index: 1;
-  }
-  .scrollCon{
-    margin-top: 125px;
   }
   .main {
     /*margin: 50px 0;*/
@@ -134,7 +131,7 @@
     }
 
     .scrollCon{
-      margin-top: 128px;
+      margin-top: 45px;
       ul{
         padding: 30px 0;
         background: #f9f9f9;
