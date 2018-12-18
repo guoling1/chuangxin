@@ -23,7 +23,8 @@ Vue.component('confirm', Confirm);
 Vue.config.productionTip = false;
 
 import axios from 'axios'
-axios.defaults.baseURL = "/api";
+// axios.defaults.baseURL = "/api";
+axios.defaults.baseURL = "http://27.188.45.219:8084";
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios= axios;
 
