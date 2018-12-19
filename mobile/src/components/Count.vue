@@ -119,7 +119,13 @@
         if (this.page == 1) {
           this.dataList = [];
         }
-        this.$axios.get(this.url+"?fromTime=" + formTime + "&ToTime=" + ToTime + "&page=" + this.page + "&rows=" + this.rows)
+        let params = {
+          fromTime: formTime,
+          ToTime: ToTime,
+          page: this.page,
+          rows: this.rows
+        }
+        this.$axios.post(this.url, params)
           .then(res => {
             this.count = res.data.total;
             for (let i = 0; i < res.data.rows.length; i++) {

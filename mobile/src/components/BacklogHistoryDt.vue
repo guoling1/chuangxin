@@ -101,7 +101,7 @@
       //获取订单列表
       getData() {
         this.isLoad = true;
-        this.$axios.get(this.url+"/"+this.$route.query.id)
+        this.$axios.post(this.url+"/"+this.$route.query.id,{id: this.$route.query.id})
           .then(res => {
             this.data = res.data;
             this.isLoad = false;

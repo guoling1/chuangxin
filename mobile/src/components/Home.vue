@@ -81,7 +81,7 @@
     methods: {
       getData() {
         this.isLoad = true;
-        this.$axios.get("/show/statistics/mainDetail")
+        this.$axios.post("/show/statistics/mainDetail")
           .then(res => {
             if(res.code=='200'){
               this.pieData.feeDayPrice = res.data[0].feeDayPrice;
@@ -99,7 +99,7 @@
           })
       },
       getBarData() {
-        this.$axios.get("/show/statistics/mainContrast")
+        this.$axios.post("/show/statistics/mainContrast")
           .then(res => {
             if(res.code=='200'){
               let data = res.data;

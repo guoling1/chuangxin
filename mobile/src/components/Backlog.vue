@@ -76,8 +76,13 @@
         if (this.page == 1) {
           this.dataList = [];
         }
-
-        this.$axios.get("/show/statistics/examine?examineFlag=2&examineType=" + this.examineType+ "&page=" + this.page + "&rows=" + this.rows)
+        let params = {
+          examineFlag: 2,
+          examineType: this.examineType,
+          page: this.page,
+          rows: this.rows
+        }
+        this.$axios.post("/show/statistics/examine", params)
           .then(res => {
             this.count = res.data.total;
             this.dataList = this.dataList.concat(res.data.rows);
