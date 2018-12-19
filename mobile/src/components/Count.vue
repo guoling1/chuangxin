@@ -307,9 +307,23 @@
   }
 </style>
 <style>
+  .weui-cell_access .weui-cell__ft:after{
+    display: none !important;
+  }
+  .weui-cell_access .weui-cell__ft {
+    padding-right: 0 !important;
+  }
+  .weui-cell {
+    padding: 0 !important;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-align: center;
+    align-items: center;
+  }
   .vux-datetime {
     line-height: 30px;
-    display: inline-block;
+    display: inline-block !important;
     font-size: 14px;
     color: #999;
   }

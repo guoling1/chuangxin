@@ -1,10 +1,6 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
-import router from './router'
-import qs from "qs"
-import store from "./store"
 
 // 引入echarts
 import echarts from 'echarts'
@@ -20,11 +16,18 @@ Vue.component('loadingPlugin', LoadingPlugin);
 Vue.component('x-table', XTable);
 Vue.component('confirm', Confirm);
 
+import App from './App'
+import router from './router'
+import qs from "qs"
+import store from "./store"
+
+
+
 Vue.config.productionTip = false;
 
 import axios from 'axios'
-// axios.defaults.baseURL = "/api";
-axios.defaults.baseURL = "http://27.188.45.219:8084";
+axios.defaults.baseURL = "/api";
+// axios.defaults.baseURL = "http://27.188.45.219:8084";
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios= axios;
 
