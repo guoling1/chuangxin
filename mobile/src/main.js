@@ -26,8 +26,8 @@ import store from "./store"
 Vue.config.productionTip = false;
 
 import axios from 'axios'
-axios.defaults.baseURL = "/api";
-// axios.defaults.baseURL = "http://27.188.45.219:8084";
+// axios.defaults.baseURL = "/api";
+axios.defaults.baseURL = "http://cx.o87.net:8080";
 // axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 Vue.prototype.$axios= axios;
 
