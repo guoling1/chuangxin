@@ -43,6 +43,29 @@
       <img src="../assets/bar.png" alt="" class="chart-title">
       <div id="barChart"></div>
     </div>
+    <div class="pie pie1">
+      <img src="../assets/pie1.png" alt="" class="chart-title">
+      <div class="search">
+        <input type="text" placeholder="输入小区名称">
+        <span class="searchBtn">查询</span>
+      </div>
+      <div id="pieChart1"></div>
+      <div class="data">
+        <div>
+          <span class="green"></span>&ensp;
+          已租房源 {{pieData1.feeDayPrice||0}}元
+        </div>
+        <div>
+          <span class="orange"></span>&ensp;
+          已售房源 {{pieData1.leaseholdDayPrice||0}}元
+        </div>
+        <div>
+          <span class="gray"></span>&ensp;
+          空置房源 {{pieData1.saleDayPrice||0}}元
+        </div>
+      </div>
+    </div>
+    <p class="tips">邯郸市创鑫华府房屋统计</p>
 
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
@@ -64,6 +87,11 @@
           leaseholdDayPrice:0,
           saleDayPrice:0
         },
+        pieData1:{
+          feeDayPrice:'10',
+          leaseholdDayPrice:'20',
+          saleDayPrice:'30'
+        },
         lastYear:[],
         thisYear: [],
         isLoad: false,
@@ -73,10 +101,12 @@
     },
     mounted() {
       // this.drawBar();  // 初始化
+      this.drawPie1();
     },
     created() {
-      this.getData()
-      this.getBarData()
+      this.getData();
+      this.getBarData();
+
     },
     methods: {
       getData() {
@@ -234,7 +264,46 @@
             },
           }]
         });
-      }
+      },
+      drawPie1() {
+        // 基于准备好的dom，初始化echarts实例
+        let pieChart1 = this.$echarts.init(document.getElementById('pieChart1'));
+        // 绘制图表
+        pieChart1.setOption({
+          legend: {
+            data:['已租','已售','空置'],
+            itemGap: 30,
+            textStyle:{
+              fontWeight:"bold",
+              color:"#666"
+            }
+          },
+          color: ["#45c5ca", "#ffa16d", "#cbcbcb"],
+          series : [
+            {
+              name:'访问来源',
+              type:'pie',
+              radius : '70%',
+              center: ['25%', '52%'],
+              itemStyle : {
+                normal : {
+                  label : {
+                    show : false
+                  },
+                  labelLine : {
+                    show : false
+                  }
+                }
+              },
+              data:[
+                {value:this.pieData1.feeDayPrice, name:'已租'},
+                {value:this.pieData1.leaseholdDayPrice, name:'已售'},
+                {value:this.pieData1.saleDayPrice, name:'空置'},
+              ]
+            }
+          ]
+        });
+      },
     }
   }
 </script>
@@ -309,7 +378,7 @@
       margin: 0 auto;
       width: 90%;
       height: 264px;
-      #pieChart{
+      #pieChart,#pieChart1{
         width: 100%;
         height: 190px;
       }
@@ -339,6 +408,9 @@
           &.blue{
             background: #8896f4;
           }
+          &.gray{
+            background: #cbcbcb;
+          }
         }
       }
     }
@@ -353,6 +425,41 @@
         width: 100%;
         height: 150px;
       }
+    }
+    .pie1{
+      height: 290px;
+      .data{
+        top: 54%;
+      }
+    }
+    .search{
+      margin: 12px 0 16px;
+      height: 28px;
+      line-height: 28px;
+      text-align: left;
+      font-size: 12px;
+      input{
+        padding: 0 6px;
+        width: 83%;
+        height: 100%;
+        border: 1px solid #ccced6;
+        border-radius: 3px;
+      }
+      .searchBtn{
+        float: right;
+        width: 15%;
+        height: 100%;
+        background: #105ba7;
+        border-radius: 3px;
+        color: #fff;
+        text-align: center;
+      }
+    }
+    .tips{
+      padding: 20px 0;
+      font-size: 14px;
+      font-weight: bold;
+      color: #000;
     }
   }
 </style>

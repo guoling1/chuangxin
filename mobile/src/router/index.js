@@ -9,6 +9,8 @@ import BacklogSubmit from '@/components/BacklogSubmit'
 import Login from '@/components/Login'
 import BacklogHistory from "../components/BacklogHistory";
 import BacklogHistoryDt from "../components/BacklogHistoryDt";
+import Homes from "../components/Homes";
+import HomesDetail from "../components/HomesDetail";
 
 Vue.use(Router)
 
@@ -28,10 +30,26 @@ export default new Router({
       		component:Home
       	},
         {
+          path:'/homes',
+          name:'homes',
+          meta:{
+            title:"房源统计"
+          },
+          component:Homes
+        },
+        {
+          path:'/homesDetail',
+          name:'homesDetail',
+          meta:{
+            title:"房源明细"
+          },
+          component:HomesDetail
+        },
+        {
           path:'/count',
           name:'count',
           meta:{
-            title:"数据统计"
+            title:"数据明细"
           },
           component:Count
         },

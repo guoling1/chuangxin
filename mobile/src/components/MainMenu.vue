@@ -7,15 +7,15 @@
         <div class="icon icon-home"></div>
         <p>主页</p>
       </router-link>
+      <router-link :to="{path:'/homes',query: common}" class="btn"
+                   :class="pathName=='homes'?'active':''">
+        <div class="icon icon-order"></div>
+        <p>房源统计</p>
+      </router-link>
       <router-link :to="{path:'/count',query: common}" class="btn"
                    :class="pathName=='count'?'active':''">
-        <div class="icon icon-order"></div>
-        <p>数据统计</p>
-      </router-link>
-      <router-link :to="{path:'/backlog',query: common}" class="btn"
-                   :class="pathName=='backlog'?'active':''">
         <div class="icon icon-my"></div>
-        <p>代办事项</p>
+        <p>数据明细</p>
       </router-link>
     </div>
   </div>

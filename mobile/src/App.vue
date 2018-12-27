@@ -1,7 +1,7 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
-      <div class="back" @click="back()" v-if="this.$route.name!='home'&&this.$route.name!='count'&&this.$route.name!='backlog'&&this.$route.name!='login'">
+      <div class="back" @click="back()" v-if="this.$route.name!='home'&&this.$route.name!='count'&&this.$route.name!='homes'&&this.$route.name!='login'">
         <img src="./assets/back.png" alt="">
         <span>返回</span>
       </div>
