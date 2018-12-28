@@ -119,7 +119,6 @@
       margin-bottom: 2px;
       background: #cbcbcb;
       width: 33%;
-      height: 72px;
       color: #fff;
 
       .tips{

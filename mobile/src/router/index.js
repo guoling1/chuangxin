@@ -11,6 +11,7 @@ import BacklogHistory from "../components/BacklogHistory";
 import BacklogHistoryDt from "../components/BacklogHistoryDt";
 import Homes from "../components/Homes";
 import HomesDetail from "../components/HomesDetail";
+import CountDetail from "../components/CountDetail";
 
 Vue.use(Router)
 
@@ -62,6 +63,14 @@ export default new Router({
           component:Backlog
         }
       ]
+    },
+    {
+      path:'/countDetail',
+      name:'countDetail',
+      meta:{
+        title:"数据明细"
+      },
+      component:CountDetail
     },
     {
       path:'/backlogDetail',

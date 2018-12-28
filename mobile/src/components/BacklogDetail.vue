@@ -1,15 +1,15 @@
 <template>
   <div class="main">
     <div class="top">
-      <img src="../assets/backlog-tit.png" alt="" class="top_title">
-      <div class="date">{{date}}</div>
+      <img src="../assets/count-title1.png" alt="" class="top_title">
+      <div class="date">{{date}} 星期{{week}}</div>
     </div>
-    <p class="name">{{data.communityName}}{{data.positionE}}{{data.merchantHouseNumber}}退款申请</p>
+    <p class="name">{{data.communityName}}{{data.positionE}}{{data.merchantHouseNumber}}缴费</p>
     <p class="time">{{data.returnPayTimeE}}</p>
     <p class="people">提交人：{{data.returnUserId}}</p>
     <ul>
       <li>
-        <span>小区：</span>
+        <span>楼盘：</span>
         <span>{{data.communityName}}</span>
       </li>
       <li>
@@ -32,22 +32,9 @@
         <span>退款费用：</span>
         <span>{{data.changeReturnMoneyE}}元</span>
       </li>
-      <li>
-        <span>备注：</span>
-        <span>{{data.saleReturnRemarkE}}</span>
-      </li>
     </ul>
-    <div class="btnGroup">
-      <div class="sure" @click="agree()">同意</div>
-      <div class="refuse" @click="refuse()">拒绝</div>
-    </div>
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
-    <confirm v-model="agreeShow"
-             title="确认"
-             @on-confirm="onConfirm">
-      <p style="text-align:center;">同意退款吗？</p>
-    </confirm>
   </div>
 </template>
 
@@ -58,33 +45,13 @@
       return {
         date:'',
         week:'',
-        url: '',
         data: [],
         isLoad: false,
-        agreeShow: false,
         showPrompt: false,
         promptMsg: '',
       }
     },
     created() {
-      let type = this.$route.query.type;
-      switch (Number(type)) {
-        case 1:
-          this.url = '/show/statistics/examine/sale';
-          break;
-        case 2:
-          this.url = '/show/statistics/examine/leasehold';
-          break;
-        case 3:
-          this.url = '/show/statistics/examine/water';
-          break;
-        case 4:
-          this.url = '/show/statistics/examine/ectricity';
-          break;
-        case 5:
-          this.url = '/show/statistics/examine/fee';
-          break;
-      }
       this.getDate();
       this.getData();
     },
@@ -111,41 +78,6 @@
 
           })
       },
-      agree(){
-        this.agreeShow = true;
-      },
-      onConfirm(){
-        this.isLoad = true;
-        let params = {
-          eId: this.data.eId,
-          peId: this.data.peId,
-          examineType: this.data.examineType,
-          examineFlag: 4,
-        }
-        this.$axios.post("/sys/examine",params)
-          .then(res=>{
-            if(res.code=='200'){
-              this.isLoad = false;
-              this.showPrompt = true;
-              this.promptMsg = res.msg;
-              let _this = this;
-              setTimeout(function () {
-                _this.$router.go(-1)
-              },1000)
-            }else {
-              this.showPrompt = true;
-              this.promptMsg = res.msg
-            }
-          })
-          .catch(err=>{
-            this.isLoad = false
-            this.showPrompt = true;
-            this.promptMsg = err;
-          })
-      },
-      refuse() {
-        this.$router.push({path: '/backlogSubmit', query: {eId: this.data.eId, peId: this.data.peId,examineType: this.data.examineType, examineFlag: this.data.examineFlag}})
-      }
     }
   }
 </script>
@@ -208,10 +140,5 @@
         background: #105ba7;
       }
     }
-  }
-</style>
-<style>
-  .weui-dialog__btn{
-    line-height: 48px !important;
   }
 </style>

@@ -47,7 +47,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in dataList">
+        <tr v-for="item in dataList" @click="toDetail()">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisFeePrice}}</td>
@@ -79,7 +79,13 @@
         rows: 10,
         index: 0,
         status: 0,
-        dataList: [],
+        dataList: [{
+          date:'2018-02-18',
+          villageName:'fds',
+          thisFeePrice:'2',
+          status:0,
+          feeTb1:12
+        }],
         isLoad: false,
         showPrompt: false,
         promptMsg: '',
@@ -88,7 +94,7 @@
     },
     created() {
       this.getDate();
-      this.getData()
+      // this.getData()
       window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
@@ -151,6 +157,9 @@
             this.promptMsg = error;
             this.isLoad = false;
           })
+      },
+      toDetail(){
+        this.$router.push('/countDetail')
       },
       changeStatus(ind) {
         this.status = ind;
