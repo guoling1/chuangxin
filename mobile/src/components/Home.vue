@@ -46,10 +46,9 @@
     <div class="pie pie1">
       <img src="../assets/pie1.png" alt="" class="chart-title">
       <div class="search">
-        <input type="text" placeholder="输入小区名称">
-        <span class="searchBtn">查询</span>
+        <input type="text" placeholder="输入小区名称" v-model="value5">
+        <span class="searchBtn" @click="showPopupPicker=true">查询</span>
       </div>
-      <selector placeholder="请选择省份" v-model="demo01" title="省份" name="district" :options="list" @on-change="onChange"></selector>
       <div id="pieChart1"></div>
       <div class="data">
         <div>
@@ -65,6 +64,7 @@
           空置房源 {{pieData1.saleDayPrice||0}}元
         </div>
       </div>
+      <popup-picker :show.sync="showPopupPicker" :show-cell="false" title="TEST" :data="villageList" v-model="value5"></popup-picker>
     </div>
     <p class="tips">邯郸市创鑫华府房屋统计</p>
 
@@ -78,8 +78,10 @@
     name: 'Home',
     data() {
       return {
+        showPopupPicker:false,
         demo01: null,
         list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
+        value5:['1'],
         topData:{
           dayPrice:0,
           monthPrice:0,
@@ -114,7 +116,7 @@
     },
     methods: {
       onChange (val) {
-        console.log(val)
+        console.log(arguments)
       },
       getData() {
         this.isLoad = true;
@@ -155,18 +157,13 @@
       },
       // 获取小区list
       getHomes(){
-        this.$axios.get("/sys/village/all")
+        this.$axios.post("/sys/village/all")
           .then(res => {
-            if(res.code=='200'){
-              this.pieData.feeDayPrice = res.data[0].feeDayPrice;
-              this.pieData.leaseholdDayPrice = res.data[0].leaseholdDayPrice;
-              this.pieData.saleDayPrice = res.data[0].saleDayPrice;
-              this.topData.dayPrice = res.data[0].dayPrice||0;
-              this.topData.monthPrice = res.data[0].monthPrice||0;
-              this.topData.yearPrice = res.data[0].yearPrice||0;
-              this.drawPie();  // 初始化饼图
-              this.isLoad = false;
+            let arr=[];
+            for(let i=0;i<res.data.length;i++){
+              arr.push({value: res.data[i].id, name: res.data[i].villageName})
             }
+            this.villageList = [arr];
           })
           .catch(error => {
 

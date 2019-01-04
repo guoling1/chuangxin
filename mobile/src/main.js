@@ -6,7 +6,7 @@ import Vue from 'vue'
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
-import { Toast,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable,Confirm,Selector} from 'vux'
+import { Toast,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable,Confirm,PopupPicker} from 'vux'
 Vue.component('toast',Toast);
 Vue.component('datetime',Datetime);
 Vue.component('tab', Tab);
@@ -15,7 +15,7 @@ Vue.component('loading', Loading );
 Vue.component('loadingPlugin', LoadingPlugin);
 Vue.component('x-table', XTable);
 Vue.component('confirm', Confirm);
-Vue.component('selector', Selector);
+Vue.component('popup-picker', PopupPicker);
 
 import App from './App'
 import router from './router'
@@ -58,6 +58,7 @@ axios.interceptors.request.use(
       config.headers.sessionid = localStorage.getItem('sessionid');
       config.headers.tester = 1;
     }
+    config.headers['X-Requested-With'] = 'XMLHttpRequest';
     if((/\/open\/api\/order\/save/).test(config.url)){
       // config.data=qs.stringify(config.data)
       return config;
@@ -73,22 +74,28 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    let {status,data} = response;
-    if(status == 200) {
-      // response.data = data.retObject||data;
-      response.data = data.data;
-    }
-    response.msg = data.msg;
-    response.code = data.code;
-    if(data.code == '403'){
-      console.log(this)
-      router.replace({
-        path: 'login',
-      })
-      // this.$router.push('/login')
-    }else{
+    console.log(response.config.url)
+    if(/\/sys\/village\/all/.test(response.config.url)){
       return response;
+    }else {
+      let {status,data} = response;
+      if(status == 200) {
+        // response.data = data.retObject||data;
+        response.data = data.data;
+      }
+      response.msg = data.msg;
+      response.code = data.code;
+      if(data.code == '403'){
+        console.log(this)
+        router.replace({
+          path: 'login',
+        })
+        // this.$router.push('/login')
+      }else{
+        return response;
+      }
     }
+
 
   },
   error => {
