@@ -91,6 +91,19 @@
         let week = ['日', '一', '二', '三', '四', '五', '六'];
         this.week = week[new Date().getDay()]
       },
+      getData() {
+        this.isLoad = true;
+        this.$axios.post("/sys/village/all")
+          .then(res => {
+            if(res.code=='200'){
+
+              this.isLoad = false;
+            }
+          })
+          .catch(error => {
+
+          })
+      },
       toDetail(){
         this.$router.push('/homesDetail')
       }

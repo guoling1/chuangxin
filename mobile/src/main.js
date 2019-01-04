@@ -6,7 +6,7 @@ import Vue from 'vue'
 import echarts from 'echarts'
 Vue.prototype.$echarts = echarts
 
-import { Toast,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable,Confirm} from 'vux'
+import { Toast,Datetime,Tab, TabItem,Loading,LoadingPlugin,XTable,Confirm,Selector} from 'vux'
 Vue.component('toast',Toast);
 Vue.component('datetime',Datetime);
 Vue.component('tab', Tab);
@@ -15,6 +15,7 @@ Vue.component('loading', Loading );
 Vue.component('loadingPlugin', LoadingPlugin);
 Vue.component('x-table', XTable);
 Vue.component('confirm', Confirm);
+Vue.component('selector', Selector);
 
 import App from './App'
 import router from './router'

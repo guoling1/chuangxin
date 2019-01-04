@@ -49,6 +49,7 @@
         <input type="text" placeholder="输入小区名称">
         <span class="searchBtn">查询</span>
       </div>
+      <selector placeholder="请选择省份" v-model="demo01" title="省份" name="district" :options="list" @on-change="onChange"></selector>
       <div id="pieChart1"></div>
       <div class="data">
         <div>
@@ -77,6 +78,8 @@
     name: 'Home',
     data() {
       return {
+        demo01: null,
+        list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
         topData:{
           dayPrice:0,
           monthPrice:0,
@@ -94,6 +97,7 @@
         },
         lastYear:[],
         thisYear: [],
+        villageList: [], //小区
         isLoad: false,
         showPrompt:false,
         promptMsg:''
@@ -106,9 +110,12 @@
     created() {
       this.getData();
       this.getBarData();
-
+      this.getHomes();
     },
     methods: {
+      onChange (val) {
+        console.log(val)
+      },
       getData() {
         this.isLoad = true;
         this.$axios.post("/show/statistics/mainDetail")
@@ -125,7 +132,7 @@
             }
           })
           .catch(error => {
-
+            this.isLoad = false;
           })
       },
       getBarData() {
@@ -144,6 +151,25 @@
             this.showPrompt = true;
             this.promptMsg = error;
             this.isLoad = false;
+          })
+      },
+      // 获取小区list
+      getHomes(){
+        this.$axios.get("/sys/village/all")
+          .then(res => {
+            if(res.code=='200'){
+              this.pieData.feeDayPrice = res.data[0].feeDayPrice;
+              this.pieData.leaseholdDayPrice = res.data[0].leaseholdDayPrice;
+              this.pieData.saleDayPrice = res.data[0].saleDayPrice;
+              this.topData.dayPrice = res.data[0].dayPrice||0;
+              this.topData.monthPrice = res.data[0].monthPrice||0;
+              this.topData.yearPrice = res.data[0].yearPrice||0;
+              this.drawPie();  // 初始化饼图
+              this.isLoad = false;
+            }
+          })
+          .catch(error => {
+
           })
       },
       drawPie() {
