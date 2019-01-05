@@ -4,17 +4,17 @@
       <img src="../assets/count-title1.png" alt="" class="top_title">
       <div class="date">{{date}} 星期{{week}}</div>
     </div>
-    <p class="name">{{data.communityName}}{{data.positionE}}{{data.merchantHouseNumber}}缴费</p>
+    <p class="name">{{data.villageName}}{{data.position}}{{data.merchantHouseNumber}}缴费</p>
     <p class="time">{{data.returnPayTimeE}}</p>
-    <p class="people">提交人：{{data.returnUserId}}</p>
+    <p class="people">提交人：{{data.username}}</p>
     <ul>
       <li>
         <span>楼盘：</span>
-        <span>{{data.communityName}}</span>
+        <span>{{data.villageName}}</span>
       </li>
       <li>
         <span>位置：</span>
-        <span>{{data.positionE}}</span>
+        <span>{{data.position}}</span>
       </li>
       <li>
         <span>房号：</span>
@@ -26,11 +26,11 @@
       </li>
       <li>
         <span>已收费用：</span>
-        <span>{{data.changeMoneyE}}元</span>
+        <span>{{data.payPrice||0}}元</span>
       </li>
       <li>
         <span>退款费用：</span>
-        <span>{{data.changeReturnMoneyE}}元</span>
+        <span>{{data.returnPrice||0}}元</span>
       </li>
     </ul>
     <loading v-model="isLoad" text="加载中"></loading>
@@ -46,19 +46,27 @@
         date:'',
         week:'',
         data: [],
+        url: '',
         isLoad: false,
         showPrompt: false,
         promptMsg: '',
       }
     },
     created() {
+      if(this.$route.query.type=='sale'){
+        this.url = '/show/statistics/salePayment'
+      }else if(this.$route.query.type=='leasehold'){
+        this.url = '/show/statistics/leaseholdPayment'
+      }else if(this.$route.query.type=='fee'){
+        this.url = '/show/statistics/feePayment'
+      }
       this.getDate();
       this.getData();
     },
     methods: {
       getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
         let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];

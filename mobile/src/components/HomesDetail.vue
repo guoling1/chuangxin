@@ -2,7 +2,7 @@
   <div class="main">
     <div class="top">
       <img src="../assets/homes-title1.png" alt="" class="top_title">
-      <div class="date">{{date}} {{week}}</div>
+      <div class="date">{{date}} 星期{{week}}</div>
     </div>
     <p class="name">基本信息</p>
     <ul>
@@ -11,56 +11,52 @@
         <span>{{data.communityName}}</span>
       </li>
       <li>
-        <span>商户姓名</span>
-        <span>{{data.positionE}}</span>
-      </li>
-      <li>
-        <span>联系电话</span>
-        <span>{{data.merchantHouseNumber}}</span>
-      </li>
-      <li>
         <span>楼号单元号</span>
+        <span>{{data.position}}-{{data.merchantHouseNumber}}</span>
+      </li>
+      <li>
+        <span>面积</span>
         <span>{{data.area}}m²</span>
       </li>
       <li>
-        <span>地名办位置</span>
-        <span>{{data.changeMoneyE}}元</span>
+        <span>状态</span>
+        <span>{{data.operatingState1}}</span>
       </li>
       <li>
-        <span>房源的状态</span>
-        <span>{{data.changeReturnMoneyE}}元</span>
+        <span>电表数</span>
+        <span>{{data.electricityNumber}}</span>
       </li>
       <li>
-        <span>单价递增比</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>电费价格</span>
+        <span>{{data.electricityPriceH}}元</span>
       </li>
       <li>
-        <span>租赁周期</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>水表数</span>
+        <span>{{data.waterNumber}}</span>
       </li>
       <li>
-        <span>已交租期限</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>水费价格</span>
+        <span>{{data.waterPriceH}}元</span>
       </li>
       <li>
-        <span>应交保证金</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>垃圾清理费</span>
+        <span>{{data.domesticWasteDisposalFeeH}}元</span>
       </li>
       <li>
-        <span>合同总价</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>预租价格</span>
+        <span>{{data.prepaidPrice}}元</span>
       </li>
       <li>
-        <span>支付方式</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>预售价格</span>
+        <span>{{data.advancePrice}}元</span>
       </li>
       <li>
-        <span>交租日期</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>创建时间</span>
+        <span>{{data.createTime}}</span>
       </li>
       <li>
-        <span>合同类型</span>
-        <span>{{data.saleReturnRemarkE}}</span>
+        <span>备注</span>
+        <span>{{data.remark}}</span>
       </li>
     </ul>
     <loading v-model="isLoad" text="加载中"></loading>
@@ -88,7 +84,7 @@
     methods: {
       getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
         let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];
@@ -96,8 +92,17 @@
       },
       getData() {
         this.isLoad = true;
-        this.$axios.post(this.url+"/"+this.$route.query.id,{id: this.$route.query.id})
+        this.$axios.get('/show/house/'+this.$route.query.id,{id: this.$route.query.id})
           .then(res => {
+            if(res.data.operatingState=='jyzk1'){
+              res.data.operatingState1='已租'
+            }else if(res.data.operatingState=='jyzk2'){
+              res.data.operatingState1='已售'
+            }else if(res.data.operatingState=='jyzk3'){
+              res.data.operatingState1='空置'
+            }else if(res.data.operatingState=='jyzk4'){
+              res.data.operatingState1='租赁到期'
+            }
             this.data = res.data;
             this.isLoad = false;
           })

@@ -46,28 +46,31 @@
     <div class="pie pie1">
       <img src="../assets/pie1.png" alt="" class="chart-title">
       <div class="search">
-        <input type="text" placeholder="输入小区名称" v-model="value5">
-        <span class="searchBtn" @click="showPopupPicker=true">查询</span>
+        <div class="searchInp">
+          <span @click.stop="showPopupPicker=true">{{village}}</span>
+          <img src="../assets/close1.png" alt="" @click.stop="closePicker" class="close fr">
+        </div>
+        <span class="searchBtn" @click="getData1()">查询</span>
       </div>
       <div id="pieChart1"></div>
       <div class="data">
         <div>
           <span class="green"></span>&ensp;
-          已租房源 {{pieData1.feeDayPrice||0}}元
+          已租房源 {{pieData1.feeDayPrice||0}}套
         </div>
         <div>
           <span class="orange"></span>&ensp;
-          已售房源 {{pieData1.leaseholdDayPrice||0}}元
+          已售房源 {{pieData1.leaseholdDayPrice||0}}套
         </div>
         <div>
           <span class="gray"></span>&ensp;
-          空置房源 {{pieData1.saleDayPrice||0}}元
+          空置房源 {{pieData1.saleDayPrice||0}}套
         </div>
       </div>
-      <popup-picker :show.sync="showPopupPicker" :show-cell="false" title="TEST" :data="villageList" v-model="value5"></popup-picker>
+
     </div>
     <p class="tips">邯郸市创鑫华府房屋统计</p>
-
+    <popup-picker :show.sync="showPopupPicker" :show-cell="false" title="TEST" :data="villageList" @on-change="pickerChange"></popup-picker>
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
   </div>
@@ -78,10 +81,6 @@
     name: 'Home',
     data() {
       return {
-        showPopupPicker:false,
-        demo01: null,
-        list: [{key: 'gd', value: '广东'}, {key: 'gx', value: '广西'}],
-        value5:['1'],
         topData:{
           dayPrice:0,
           monthPrice:0,
@@ -93,13 +92,16 @@
           saleDayPrice:0
         },
         pieData1:{
-          feeDayPrice:'10',
-          leaseholdDayPrice:'20',
-          saleDayPrice:'30'
+          feeDayPrice:'0',
+          leaseholdDayPrice:'0',
+          saleDayPrice:'0'
         },
         lastYear:[],
         thisYear: [],
         villageList: [], //小区
+        village: '点击选择小区',
+        villageId: '',
+        showPopupPicker:false,
         isLoad: false,
         showPrompt:false,
         promptMsg:''
@@ -107,28 +109,43 @@
     },
     mounted() {
       // this.drawBar();  // 初始化
-      this.drawPie1();
+      // this.drawPie1();
     },
     created() {
       this.getData();
+      this.getData1();
       this.getBarData();
       this.getHomes();
     },
     methods: {
-      onChange (val) {
-        console.log(arguments)
+      pickerChange(val){
+        this.village = val.join().split(',')[1];
+        this.villageId = val.join().split(',')[0];
+      },
+      closePicker(){
+        this.village = '点击选择小区';
+        this.villageId = '';
       },
       getData() {
         this.isLoad = true;
         this.$axios.post("/show/statistics/mainDetail")
           .then(res => {
             if(res.code=='200'){
-              this.pieData.feeDayPrice = res.data[0].feeDayPrice;
-              this.pieData.leaseholdDayPrice = res.data[0].leaseholdDayPrice;
-              this.pieData.saleDayPrice = res.data[0].saleDayPrice;
-              this.topData.dayPrice = res.data[0].dayPrice||0;
-              this.topData.monthPrice = res.data[0].monthPrice||0;
-              this.topData.yearPrice = res.data[0].yearPrice||0;
+              if(res.data[0]){
+                this.pieData.feeDayPrice = res.data[0].feeDayPrice;
+                this.pieData.leaseholdDayPrice = res.data[0].leaseholdDayPrice;
+                this.pieData.saleDayPrice = res.data[0].saleDayPrice;
+                this.topData.dayPrice = res.data[0].dayPrice||0;
+                this.topData.monthPrice = res.data[0].monthPrice||0;
+                this.topData.yearPrice = res.data[0].yearPrice||0;
+              }else{
+                this.pieData={
+                  feeDayPrice:'0',
+                  leaseholdDayPrice:'0',
+                  saleDayPrice:'0'
+                }
+              }
+
               this.drawPie();  // 初始化饼图
               this.isLoad = false;
             }
@@ -155,13 +172,45 @@
             this.isLoad = false;
           })
       },
+      getData1() {
+        this.isLoad = true;
+        this.$axios.post("/show/statistics/villageType",{
+          villageName:this.villageId
+        })
+          .then(res => {
+            if(res.code=='200'){
+              if(res.data.rows.length){
+                for(let i=0;i<res.data.rows.length;i++){
+                  if(res.data.rows[i].operatingState=='已租'){
+                    this.pieData1.feeDayPrice = res.data.rows[i].nums;
+                  }else if(res.data.rows[i].operatingState=='已售'){
+                    this.pieData1.leaseholdDayPrice = res.data.rows[i].nums;
+                  }else if(res.data.rows[i].operatingState=='空置'){
+                    this.pieData1.saleDayPrice = res.data.rows[i].nums;
+                  }
+                }
+              }else{
+                this.pieData1={
+                  feeDayPrice:'0',
+                  leaseholdDayPrice:'0',
+                  saleDayPrice:'0'
+                }
+              }
+              this.drawPie1();  // 初始化饼图
+              this.isLoad = false;
+            }
+          })
+          .catch(error => {
+            this.isLoad = false;
+          })
+      },
       // 获取小区list
       getHomes(){
         this.$axios.post("/sys/village/all")
           .then(res => {
             let arr=[];
             for(let i=0;i<res.data.length;i++){
-              arr.push({value: res.data[i].id, name: res.data[i].villageName})
+              arr.push({value: [res.data[i].id,res.data[i].villageName], name: res.data[i].villageName})
             }
             this.villageList = [arr];
           })
@@ -337,6 +386,7 @@
     /*margin: 50px 0 0;*/
     padding-bottom: 50px;
     width: 100%;
+    overflow-x: hidden;
 
     .top {
       height: 212px;
@@ -461,12 +511,22 @@
       line-height: 28px;
       text-align: left;
       font-size: 12px;
-      input{
+      input,.searchInp{
+        display: inline-block;
         padding: 0 6px;
         width: 83%;
         height: 100%;
         border: 1px solid #ccced6;
         border-radius: 3px;
+      }
+      .searchInp span{
+        width: 80%;
+        display: inline-block;
+      }
+      .close{
+        margin-top: 5px;
+        height: 16px;
+        width: auto;
       }
       .searchBtn{
         float: right;

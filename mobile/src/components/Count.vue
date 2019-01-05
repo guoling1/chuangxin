@@ -47,13 +47,15 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in dataList" @click="toDetail()">
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisFeePrice}}</td>
-          <td v-if="status=='0'" :class="item.numStatus?'red':'green'">{{item.numStatus?'↑':'↓'}}{{item.feeTb}}%</td>
+          <td v-if="status=='0'&&item.feeTb" :class="item.numStatus?'red':'green'">{{item.numStatus?'↑':'↓'}}{{parseFloat(item.feeTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&!item.feeTb" :class="item.numStatus?'red':'green'"></td>
           <td v-if="status=='1'">{{item.thisFeePrice1}}</td>
-          <td v-if="status=='1'" :class="item.numStatus1?'red':'green'">{{item.numStatus1?'↑':'↓'}}{{item.feeTb1}}%</td>
+          <td v-if="status=='1'&&item.feeTb1" :class="item.numStatus1?'red':'green'">{{item.numStatus1?'↑':'↓'}}{{parseFloat(item.feeTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&!item.feeTb1" :class="item.numStatus1?'red':'green'"></td>
         </tr>
         </tbody>
       </x-table>
@@ -79,13 +81,7 @@
         rows: 10,
         index: 0,
         status: 0,
-        dataList: [{
-          date:'2018-02-18',
-          villageName:'fds',
-          thisFeePrice:'2',
-          status:0,
-          feeTb1:12
-        }],
+        dataList: [],
         isLoad: false,
         showPrompt: false,
         promptMsg: '',
@@ -94,7 +90,7 @@
     },
     created() {
       this.getDate();
-      // this.getData()
+      this.getData()
       window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
@@ -103,7 +99,7 @@
     methods: {
       getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
         let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];
@@ -158,8 +154,27 @@
             this.isLoad = false;
           })
       },
-      toDetail(){
-        this.$router.push('/countDetail')
+      toDetail(id){
+        let type;
+        if (this.index == 0) {
+          type = "fee";
+        } else if (this.index == 1) {
+          type = "leasehold";
+        } else if (this.index == 2) {
+          type = "sale";
+        }
+        let formTime, ToTime;
+        if (this.startTime == "选择开始时间") {
+          formTime = this.date;
+        } else {
+          formTime = this.startTime;
+        }
+        if (this.endTime == "选择截止时间") {
+          ToTime = this.date;
+        } else {
+          ToTime = this.endTime;
+        }
+        this.$router.push('/countDetail?fromTime='+formTime+'&ToTime='+ToTime+'&villageId='+id+'&type='+type);
       },
       changeStatus(ind) {
         this.status = ind;

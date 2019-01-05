@@ -8,23 +8,23 @@
     </div>
     <div class="scrollCon" ref="conStyle">
       <ul class="ul">
-        <li v-for="item in dataList" class="clear" @click="toDetail">
+        <li v-for="item in dataList" class="clear" @click="toDetail(item.merchantHouseId)">
           <div class="left">
-            <p class="name">{{item.name}}</p>
-            <p class="detail">{{item.no}}</p>
+            <p class="name">{{item.villageName}}</p>
+            <p class="detail">{{item.position}}-{{item.merchantHouseNumber}}</p>
           </div>
           <div class="right">
             <div>
               <p class="name">缴费时间</p>
-              <p class="detail">{{item.date}}</p>
+              <p class="detail">{{item.payTime}}</p>
             </div>
             <div>
               <p class="name">门牌号码</p>
-              <p class="detail">{{item.no}}</p>
+              <p class="detail">{{item.position}}-{{item.merchantHouseNumber}}</p>
             </div>
             <div class="price">
               <p class="name">缴费金额</p>
-              <p class="detail">{{item.price}}</p>
+              <p class="detail">{{item.payPrice}}</p>
             </div>
           </div>
         </li>
@@ -45,25 +45,23 @@
         week: '',
         page: 1,
         rows: 10,
-        dataList: [{
-          name:'创鑫华府',
-          no:'4-1-5',
-          date:'2018-02-18',
-          price:'2000000'
-        },{
-          name:'创鑫华府',
-          no:'4-1-5',
-          date:'2018-02-18',
-          price:'2000000'
-        }],
+        url:'',
+        dataList: [],
         isLoad: false,
         showPrompt: false,
         promptMsg: ''
       }
     },
     created() {
+      if(this.$route.query.type=='sale'){
+        this.url = '/show/statistics/salePay'
+      }else if(this.$route.query.type=='leasehold'){
+        this.url = '/show/statistics/leaseholdPay'
+      }else if(this.$route.query.type=='fee'){
+        this.url = '/show/statistics/feePay'
+      }
       this.getDate();
-      // this.getData()
+      this.getData()
       window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
@@ -72,7 +70,7 @@
     methods: {
       getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
         let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];
@@ -81,6 +79,9 @@
       getData() {
         this.isLoad = true;
         let params = {
+          fromTime: this.$route.query.fromTime,
+          ToTime: this.$route.query.ToTime,
+          villageName: this.$route.query.villageId,
           page: this.page,
           rows: this.rows
         }
@@ -88,19 +89,7 @@
           .then(res => {
             this.count = res.data.total;
             for (let i = 0; i < res.data.rows.length; i++) {
-              res.data.rows[i].date = formTime + '至' + ToTime;
-              if(res.data.rows[i].feeTb<0){
-                res.data.rows[i].feeTb=res.data.rows[i].feeTb.replace('-','');
-                res.data.rows[i].numStatus=false
-              }else {
-                res.data.rows[i].numStatus=true
-              }
-              if(res.data.rows[i].feeTb1<0){
-                res.data.rows[i].feeTb1=res.data.rows[i].feeTb1.replace('-','');
-                res.data.rows[i].numStatus1=false
-              }else {
-                res.data.rows[i].numStatus1=true
-              }
+
             }
             this.dataList = this.dataList.concat(res.data.rows);
             this.isLoad = false;
@@ -111,8 +100,8 @@
             this.isLoad = false;
           })
       },
-      toDetail(){
-        this.$router.push('/backlogDetail')
+      toDetail(id){
+        this.$router.push('/backlogDetail?type='+this.$route.query.type+'&id='+id)
       },
       onScroll() {
         //可滚动容器的高度

@@ -1,6 +1,9 @@
 <template lang="html">
   <div class="menu flex-box-column flexBox">
-    <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
     <div class="bottom">
       <router-link :to="{path:'/home',query: common}" class="btn"
                    :class="pathName=='home'?'active':''">

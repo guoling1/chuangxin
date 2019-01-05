@@ -21,12 +21,16 @@ export default new Router({
       path: '/',
       redirect:'/home',
       component: MainMenu,
+      meta:{
+        keepAlive: true
+      },
       children:[
       	{
       		path:'/home',
       		name:'home',
           meta:{
-            title:"创鑫地产"
+            title:"创鑫地产",
+            keepAlive: false
           },
       		component:Home
       	},
@@ -34,23 +38,18 @@ export default new Router({
           path:'/homes',
           name:'homes',
           meta:{
-            title:"房源统计"
+            title:"房源统计",
+            keepAlive: true
+
           },
           component:Homes
-        },
-        {
-          path:'/homesDetail',
-          name:'homesDetail',
-          meta:{
-            title:"房源明细"
-          },
-          component:HomesDetail
         },
         {
           path:'/count',
           name:'count',
           meta:{
-            title:"数据明细"
+            title:"数据明细",
+            keepAlive: true
           },
           component:Count
         },
@@ -58,7 +57,8 @@ export default new Router({
           path:'/backlog',
           name:'backlog',
           meta:{
-            title:"待办事项"
+            title:"待办事项",
+            keepAlive: false
           },
           component:Backlog
         }
@@ -68,7 +68,8 @@ export default new Router({
       path:'/countDetail',
       name:'countDetail',
       meta:{
-        title:"数据明细"
+        title:"数据明细",
+        keepAlive: false
       },
       component:CountDetail
     },
@@ -76,7 +77,8 @@ export default new Router({
       path:'/backlogDetail',
       name:'backlogDetail',
       meta:{
-        title:"待办事项"
+        title:"待办事项",
+        keepAlive: false
       },
       component:BacklogDetail
     },
@@ -84,7 +86,8 @@ export default new Router({
       path:'/backlogSubmit',
       name:'backlogSubmit',
       meta:{
-        title:"待办事项"
+        title:"待办事项",
+        keepAlive: false
       },
       component:BacklogSubmit
     },
@@ -92,7 +95,8 @@ export default new Router({
       path:'/backlogHistory',
       name:'backlogHistory',
       meta:{
-        title:"历史消息"
+        title:"历史消息",
+        keepAlive: false
       },
       component:BacklogHistory
     },
@@ -100,7 +104,8 @@ export default new Router({
       path:'/backlogHistoryDt',
       name:'backlogHistoryDt',
       meta:{
-        title:"历史消息"
+        title:"历史消息",
+        keepAlive: false
       },
       component:BacklogHistoryDt
     },
@@ -108,9 +113,19 @@ export default new Router({
       path:'/login',
       name:'login',
       meta:{
-        title:"登录"
+        title:"登录",
+        keepAlive: false
       },
       component: Login
-    }
+    },
+    {
+      path:'/homesDetail',
+      name:'homesDetail',
+      meta:{
+        title:"房源明细",
+        keepAlive: false
+      },
+      component:HomesDetail
+    },
   ]
 })
