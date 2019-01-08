@@ -2,20 +2,20 @@
   <div class="main">
     <div class="top">
       <div class="up">
-        <img src="../assets/home-tit.png" alt="" class="top_title">
+        <img src="../assets/home-tit1.png" alt="" class="top_title">
         <div class="date">2018年11月23日</div>
       </div>
       <div class="content">
-        <div class="price">{{topData.dayPrice}}<span>元</span></div>
+        <div class="price">{{topData.yearPrice}}<span>元</span></div>
         <div class="bottom">
           <div>
-            <p>当月累计收益(元)</p>
-            <p>{{topData.monthPrice}}</p>
+            <p>昨日收益(元)</p>
+            <p>{{topData.dayPrice}}</p>
           </div>
           <i></i>
           <div>
-            <p>全年累计(元)</p>
-            <p>{{topData.yearPrice}}</p>
+            <p>当月累计收益(元)</p>
+            <p>{{topData.monthPrice}}</p>
           </div>
         </div>
       </div>
@@ -180,7 +180,13 @@
           .then(res => {
             if(res.code=='200'){
               if(res.data.rows.length){
+                this.pieData1={
+                  feeDayPrice:0,
+                  operatingState:0,
+                  saleDayPrice:0
+                }
                 for(let i=0;i<res.data.rows.length;i++){
+
                   if(res.data.rows[i].operatingState=='已租'){
                     this.pieData1.feeDayPrice = res.data.rows[i].nums;
                   }else if(res.data.rows[i].operatingState=='已售'){
@@ -237,7 +243,7 @@
               name:'访问来源',
               type:'pie',
               radius : '70%',
-              center: ['25%', '52%'],
+              center: ['25%', '55%'],
               itemStyle : {
                 normal : {
                   label : {

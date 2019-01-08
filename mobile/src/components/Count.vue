@@ -47,7 +47,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="item in dataList" @click="toDetail(item.villageId)">
+        <!--物业-->
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==0">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisFeePrice}}</td>
@@ -56,6 +57,28 @@
           <td v-if="status=='1'">{{item.thisFeePrice1}}</td>
           <td v-if="status=='1'&&item.feeTb1" :class="item.numStatus1?'red':'green'">{{item.numStatus1?'↑':'↓'}}{{parseFloat(item.feeTb1).toFixed(2)}}%</td>
           <td v-if="status=='1'&&!item.feeTb1" :class="item.numStatus1?'red':'green'"></td>
+        </tr>
+        <!--租赁-->
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==1">
+          <td>{{item.date}}</td>
+          <td>{{item.villageName}}</td>
+          <td v-if="status=='0'">{{item.thisLeaseholdPrice}}</td>
+          <td v-if="status=='0'&&item.leaseholdTb" :class="item.numStatusa?'red':'green'">{{item.numStatusa?'↑':'↓'}}{{parseFloat(item.leaseholdTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&!item.leaseholdTb" :class="item.numStatusa?'red':'green'"></td>
+          <td v-if="status=='1'">{{item.thisLeaseholdPrice1}}</td>
+          <td v-if="status=='1'&&item.leaseholdTb1" :class="item.numStatusa1?'red':'green'">{{item.numStatusa1?'↑':'↓'}}{{parseFloat(item.leaseholdTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&!item.leaseholdTb1" :class="item.numStatusa1?'red':'green'"></td>
+        </tr>
+        <!--销售-->
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==2">
+          <td>{{item.date}}</td>
+          <td>{{item.villageName}}</td>
+          <td v-if="status=='0'">{{item.thisSalePrice}}</td>
+          <td v-if="status=='0'&&item.saleTb" :class="item.numStatusb?'red':'green'">{{item.numStatus?'↑':'↓'}}{{parseFloat(item.saleTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&!item.saleTb" :class="item.numStatusb?'red':'green'"></td>
+          <td v-if="status=='1'">{{item.thisSalePrice1}}</td>
+          <td v-if="status=='1'&&item.saleTb1" :class="item.numStatusb1?'red':'green'">{{item.numStatusb1?'↑':'↓'}}{{parseFloat(item.saleTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&!item.saleTb1" :class="item.numStatusb1?'red':'green'"></td>
         </tr>
         </tbody>
       </x-table>
@@ -88,9 +111,33 @@
         url:'/show/statistics/fee'
       }
     },
+    beforeRouteEnter(to,from,next){
+      next(vm=>{
+        vm.getDate();
+        if(from.name=='countDetail'){
+          if(JSON.parse(localStorage.getItem('time')).startTime.toString()==vm.date.toString()){
+            vm.startTime = '选择开始时间'
+          }else {
+            vm.startTime = JSON.parse(localStorage.getItem('time')).startTime
+          }
+          if(JSON.parse(localStorage.getItem('time')).endTime.toString()==vm.date.toString()){
+            vm.endTime = '选择截止时间'
+          }else {
+            vm.endTime = JSON.parse(localStorage.getItem('time')).endTime
+          }
+
+          vm.status = JSON.parse(localStorage.getItem('time')).status
+          vm.index = JSON.parse(localStorage.getItem('time')).index
+        }else {
+          vm.startTime = '选择开始时间'
+          vm.endTime = '选择截止时间'
+          vm.status = 0;
+          vm.index = 0;
+        }
+        vm.switchTabItem(vm.index)
+      })
+    },
     created() {
-      this.getDate();
-      this.getData()
       window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
@@ -132,6 +179,7 @@
             this.count = res.data.total;
             for (let i = 0; i < res.data.rows.length; i++) {
               res.data.rows[i].date = formTime + '至' + ToTime;
+              //物业
               if(res.data.rows[i].feeTb<0){
                 res.data.rows[i].feeTb=res.data.rows[i].feeTb.replace('-','');
                 res.data.rows[i].numStatus=false
@@ -143,6 +191,32 @@
                 res.data.rows[i].numStatus1=false
               }else {
                 res.data.rows[i].numStatus1=true
+              }
+              //租赁
+              if(res.data.rows[i].leaseholdTb<0){
+                res.data.rows[i].leaseholdTb=res.data.rows[i].leaseholdTb.replace('-','');
+                res.data.rows[i].numStatusa=false
+              }else {
+                res.data.rows[i].numStatusa=true
+              }
+              if(res.data.rows[i].leaseholdTb1<0){
+                res.data.rows[i].leaseholdTb1=res.data.rows[i].leaseholdTb1.replace('-','');
+                res.data.rows[i].numStatusa1=false
+              }else {
+                res.data.rows[i].numStatusa1=true
+              }
+              //销售
+              if(res.data.rows[i].saleTb<0){
+                res.data.rows[i].saleTb=res.data.rows[i].saleTb.replace('-','');
+                res.data.rows[i].numStatusb=false
+              }else {
+                res.data.rows[i].numStatusb=true
+              }
+              if(res.data.rows[i].saleTb1<0){
+                res.data.rows[i].saleTb1=res.data.rows[i].saleTb1.replace('-','');
+                res.data.rows[i].numStatusb1=false
+              }else {
+                res.data.rows[i].numStatusb1=true
               }
             }
             this.dataList = this.dataList.concat(res.data.rows);
@@ -174,6 +248,7 @@
         } else {
           ToTime = this.endTime;
         }
+        localStorage.setItem('time',JSON.stringify({startTime:formTime,endTime:ToTime,index:this.index,status:this.status}));
         this.$router.push('/countDetail?fromTime='+formTime+'&ToTime='+ToTime+'&villageId='+id+'&type='+type);
       },
       changeStatus(ind) {
@@ -207,11 +282,12 @@
         this.getData()
       },
       onScroll() {
+        console.log(22)
         //可滚动容器的高度
         let innerHeight = document.querySelector('.vux-table').clientHeight;                    //屏幕尺寸高度
         let outerHeight = document.documentElement.clientHeight - (document.documentElement.clientHeight - document.querySelector('.noScroll').clientHeight - 100);                    //可滚动容器超出当前窗口显示范围的高度
-        let scrollTop = document.documentElement.scrollTop;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
-        if (innerHeight - (outerHeight + scrollTop) < 70) {                        //加载更多操作
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
+        if (innerHeight - (outerHeight + scrollTop) < 200) {                        //加载更多操作
           if (this.count > this.page * this.rows) {
             console.log("loadmore");
             this.page++;

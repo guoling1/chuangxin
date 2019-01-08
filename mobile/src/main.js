@@ -74,7 +74,6 @@ axios.interceptors.request.use(
 // http response 拦截器
 axios.interceptors.response.use(
   response => {
-    console.log(response.config.url)
     if(/\/sys\/village\/all/.test(response.config.url)){
       return response;
     }else {
@@ -86,7 +85,6 @@ axios.interceptors.response.use(
       response.msg = data.msg;
       response.code = data.code;
       if(data.code == '403'){
-        console.log(this)
         router.replace({
           path: 'login',
         })
@@ -99,7 +97,6 @@ axios.interceptors.response.use(
 
   },
   error => {
-    console.log(error)
     return Promise.reject('系统异常')   // 返回接口返回的错误信息
   });
 

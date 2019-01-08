@@ -103,7 +103,7 @@
         //可滚动容器的高度
         let innerHeight = document.querySelector('.scrollUl').clientHeight;                    //屏幕尺寸高度
         let outerHeight = document.documentElement.clientHeight - (document.documentElement.clientHeight - document.querySelector('.noScroll').clientHeight - 100);                    //可滚动容器超出当前窗口显示范围的高度
-        let scrollTop = document.documentElement.scrollTop;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop || window.pageYOffset;                    //scrollTop在页面为滚动时为0，开始滚动后，慢慢增加，滚动到页面底部时，出现innerHeight < (outerHeight + scrollTop)的情况，严格来讲，是接近底部。
         if (innerHeight - (outerHeight + scrollTop)) {                        //加载更多操作
           if (this.count > this.page * this.rows) {
             console.log("loadmore");
