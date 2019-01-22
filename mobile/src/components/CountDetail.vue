@@ -11,7 +11,7 @@
         <li v-for="item in dataList" class="clear" @click="toDetail(item.merchantHouseId)">
           <div class="left">
             <p class="name">{{item.villageName}}</p>
-            <p class="detail">{{item.position}}-{{item.merchantHouseNumber}}</p>
+            <p class="detail">{{item.position}}</p>
           </div>
           <div class="right">
             <div>
