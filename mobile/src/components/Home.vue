@@ -3,7 +3,7 @@
     <div class="top">
       <div class="up">
         <img src="../assets/home-tit1.png" alt="" class="top_title">
-        <div class="date">2018年11月23日</div>
+        <div class="date">{{date}} 星期{{week}}</div>
       </div>
       <div class="content">
         <div class="price">{{topData.yearPrice}}<span>元</span></div>
@@ -81,6 +81,8 @@
     name: 'Home',
     data() {
       return {
+        date:'',
+        week:'',
         topData:{
           dayPrice:0,
           monthPrice:0,
@@ -112,12 +114,21 @@
       // this.drawPie1();
     },
     created() {
+      this.getDate();
       this.getData();
       this.getData1();
       this.getBarData();
       this.getHomes();
     },
     methods: {
+      getDate() {
+        let year = new Date().getFullYear();
+        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
+        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
+        this.date = year + '-' + month + '-' + date;
+        let week = ['日', '一', '二', '三', '四', '五', '六'];
+        this.week = week[new Date().getDay()]
+      },
       pickerChange(val){
         this.village = val.join().split(',')[1];
         this.villageId = val.join().split(',')[0];
