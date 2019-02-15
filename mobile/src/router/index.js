@@ -77,7 +77,7 @@ export default new Router({
       path:'/backlogDetail',
       name:'backlogDetail',
       meta:{
-        title:"待办事项",
+        title:"数据详情",
         keepAlive: false
       },
       component:BacklogDetail
