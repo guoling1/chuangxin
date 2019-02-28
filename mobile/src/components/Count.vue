@@ -52,10 +52,14 @@
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisFeePrice}}</td>
-          <td v-if="status=='0'&&item.feeTb" :class="item.numStatus?'red':'green'">{{item.numStatus?'↑':'↓'}}{{parseFloat(item.feeTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&item.feeTb" :class="item.numStatus?'red':'green'">
+            <span v-if="item.numStatus">↑</span><span v-if="!item.numStatus">↓</span>
+            {{parseFloat(item.feeTb).toFixed(2)}}%</td>
           <td v-if="status=='0'&&!item.feeTb" :class="item.numStatus?'red':'green'"></td>
           <td v-if="status=='1'">{{item.thisFeePrice1}}</td>
-          <td v-if="status=='1'&&item.feeTb1" :class="item.numStatus1?'red':'green'">{{item.numStatus1?'↑':'↓'}}{{parseFloat(item.feeTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&item.feeTb1" :class="item.numStatus1?'red':'green'">
+            <span v-if="item.numStatus1">↑</span><span v-if="!item.numStatus1">↓</span>
+            {{parseFloat(item.feeTb1).toFixed(2)}}%</td>
           <td v-if="status=='1'&&!item.feeTb1" :class="item.numStatus1?'red':'green'"></td>
         </tr>
         <!--租赁-->
@@ -63,10 +67,14 @@
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisLeaseholdPrice}}</td>
-          <td v-if="status=='0'&&item.leaseholdTb" :class="item.numStatusa?'red':'green'">{{item.numStatusa?'↑':'↓'}}{{parseFloat(item.leaseholdTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&item.leaseholdTb" :class="item.numStatusa?'red':'green'">
+            <span v-if="item.numStatusa">↑</span><span v-if="!item.numStatusa">↓</span>
+            {{parseFloat(item.leaseholdTb).toFixed(2)}}%</td>
           <td v-if="status=='0'&&!item.leaseholdTb" :class="item.numStatusa?'red':'green'"></td>
           <td v-if="status=='1'">{{item.thisLeaseholdPrice1}}</td>
-          <td v-if="status=='1'&&item.leaseholdTb1" :class="item.numStatusa1?'red':'green'">{{item.numStatusa1?'↑':'↓'}}{{parseFloat(item.leaseholdTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&item.leaseholdTb1" :class="item.numStatusa1?'red':'green'">
+            <span v-if="item.numStatusa1">↑</span><span v-if="!item.numStatusa1">↓</span>
+            {{parseFloat(item.leaseholdTb1).toFixed(2)}}%</td>
           <td v-if="status=='1'&&!item.leaseholdTb1" :class="item.numStatusa1?'red':'green'"></td>
         </tr>
         <!--销售-->
@@ -74,10 +82,10 @@
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisSalePrice}}</td>
-          <td v-if="status=='0'&&item.saleTb" :class="item.numStatusb?'red':'green'">{{item.numStatus?'↑':'↓'}}{{parseFloat(item.saleTb).toFixed(2)}}%</td>
+          <td v-if="status=='0'&&item.saleTb" :class="item.numStatusb?'red':'green'"><span v-if="item.numStatusb">↑</span><span v-if="!item.numStatusb">↓</span>{{parseFloat(item.saleTb).toFixed(2)}}%</td>
           <td v-if="status=='0'&&!item.saleTb" :class="item.numStatusb?'red':'green'"></td>
           <td v-if="status=='1'">{{item.thisSalePrice1}}</td>
-          <td v-if="status=='1'&&item.saleTb1" :class="item.numStatusb1?'red':'green'">{{item.numStatusb1?'↑':'↓'}}{{parseFloat(item.saleTb1).toFixed(2)}}%</td>
+          <td v-if="status=='1'&&item.saleTb1" :class="item.numStatusb1?'red':'green'"><span v-if="item.numStatusb1">↑</span><span v-if="!item.numStatusb1">↓</span>{{parseFloat(item.saleTb1).toFixed(2)}}%</td>
           <td v-if="status=='1'&&!item.saleTb1" :class="item.numStatusb1?'red':'green'"></td>
         </tr>
         </tbody>
@@ -85,7 +93,7 @@
     </div>
 
     <loading v-model="isLoad" text="加载中"></loading>
-    <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
+    <!--<toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>-->
   </div>
 </template>
 
@@ -181,39 +189,39 @@
               res.data.rows[i].date = formTime + '至' + ToTime;
               //物业
               if(res.data.rows[i].feeTb<0){
-                res.data.rows[i].feeTb=res.data.rows[i].feeTb.replace('-','');
+                res.data.rows[i].feeTb=Math.abs(res.data.rows[i].feeTb);
                 res.data.rows[i].numStatus=false
               }else {
                 res.data.rows[i].numStatus=true
               }
               if(res.data.rows[i].feeTb1<0){
-                res.data.rows[i].feeTb1=res.data.rows[i].feeTb1.replace('-','');
+                res.data.rows[i].feeTb1=Math.abs(res.data.rows[i].feeTb1);
                 res.data.rows[i].numStatus1=false
               }else {
                 res.data.rows[i].numStatus1=true
               }
               //租赁
               if(res.data.rows[i].leaseholdTb<0){
-                res.data.rows[i].leaseholdTb=res.data.rows[i].leaseholdTb.replace('-','');
+                res.data.rows[i].leaseholdTb=Math.abs(res.data.rows[i].leaseholdTb);
                 res.data.rows[i].numStatusa=false
               }else {
                 res.data.rows[i].numStatusa=true
               }
               if(res.data.rows[i].leaseholdTb1<0){
-                res.data.rows[i].leaseholdTb1=res.data.rows[i].leaseholdTb1.replace('-','');
+                res.data.rows[i].leaseholdTb1=Math.abs(res.data.rows[i].leaseholdTb1);
                 res.data.rows[i].numStatusa1=false
               }else {
                 res.data.rows[i].numStatusa1=true
               }
               //销售
               if(res.data.rows[i].saleTb<0){
-                res.data.rows[i].saleTb=res.data.rows[i].saleTb.replace('-','');
+                res.data.rows[i].saleTb=Math.abs(res.data.rows[i].saleTb);
                 res.data.rows[i].numStatusb=false
               }else {
                 res.data.rows[i].numStatusb=true
               }
               if(res.data.rows[i].saleTb1<0){
-                res.data.rows[i].saleTb1=res.data.rows[i].saleTb1.replace('-','');
+                res.data.rows[i].saleTb1=Math.abs(res.data.rows[i].saleTb1);
                 res.data.rows[i].numStatusb1=false
               }else {
                 res.data.rows[i].numStatusb1=true
