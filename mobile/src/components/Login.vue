@@ -59,6 +59,7 @@
                   _this.$router.push('/home')
                 },1000)
               }else {
+                this.isLoad = false;
                 this.showPrompt = true;
                 this.promptMsg = res.msg
               }

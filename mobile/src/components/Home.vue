@@ -2,7 +2,8 @@
   <div class="main">
     <div class="top">
       <div class="up">
-        <img src="../assets/home-tit1.png" alt="" class="top_title">
+        <!--<img src="../assets/home-tit1.png" alt="" class="top_title">-->
+        <p style="font-size: 24px;font-weight: bold;margin-bottom: 5px;">物业、招商、销售全年收入</p>
         <div class="date">{{date}} 星期{{week}}</div>
       </div>
       <div class="content">
@@ -30,7 +31,7 @@
         </div>
         <div>
           <span class="green"></span>&ensp;
-          租赁收益 {{pieData.leaseholdDayPrice||0}}元
+          招商收益 {{pieData.leaseholdDayPrice||0}}元
         </div>
         <div>
           <span class="blue"></span>&ensp;
@@ -42,6 +43,7 @@
     <div class="bar">
       <img src="../assets/bar.png" alt="" class="chart-title">
       <div id="barChart"></div>
+      <div id="barChart1"></div>
     </div>
     <div class="pie pie1">
       <img src="../assets/pie1.png" alt="" class="chart-title">
@@ -69,7 +71,7 @@
       </div>
 
     </div>
-    <p class="tips">邯郸市创鑫华府房屋统计</p>
+    <p class="tips">邯郸市创鑫房屋统计</p>
     <popup-picker :show.sync="showPopupPicker" :show-cell="false" title="TEST" :data="villageList" @on-change="pickerChange"></popup-picker>
     <loading v-model="isLoad" text="加载中"></loading>
     <toast v-model="showPrompt" position="middle" type="text" :text="promptMsg" width="60%"></toast>
@@ -98,8 +100,12 @@
           leaseholdDayPrice:'0',
           saleDayPrice:'0'
         },
-        lastYear:[],
-        thisYear: [],
+        // lastYear:[],
+        // thisYear: [],
+        lastsaleYear:[],
+        thissaleYear: [],
+        lastleaseholdYear:[],
+        thisleaseholdYear: [],
         villageList: [], //小区
         village: '点击选择小区',
         villageId: '',
@@ -171,10 +177,15 @@
             if(res.code=='200'){
               let data = res.data;
               for(let i=0;i<data.length;i++){
-                this.thisYear.push(data[i].feeMonthPrice+data[i].saleMonthPrice+data[i].leaseholdMonthPrice)
-                this.lastYear.push(data[i].feeMonthPriceLast+data[i].saleMonthPriceLast+data[i].leaseholdMonthPriceLast)
+                // this.thisYear.push(data[i].feeMonthPrice+data[i].saleMonthPrice+data[i].leaseholdMonthPrice)
+                // this.lastYear.push(data[i].feeMonthPriceLast+data[i].saleMonthPriceLast+data[i].leaseholdMonthPriceLast)
+                this.lastsaleYear.push(parseFloat(data[i].saleMonthPriceLast/10000).toFixed(0))
+                this.thissaleYear.push(parseFloat(data[i].saleMonthPrice/10000).toFixed(0))
+                this.lastleaseholdYear.push(parseFloat(data[i].leaseholdMonthPriceLast/10000).toFixed(0))
+                this.thisleaseholdYear.push(parseFloat(data[i].leaseholdMonthPrice/10000).toFixed(0))
               }
               this.drawBar()
+              this.drawBar1()
             }
           })
           .catch(error => {
@@ -241,7 +252,7 @@
         // 绘制图表
         pieChart.setOption({
           legend: {
-            data:['物业','租赁','已售'],
+            data:['物业','招商','已售'],
             itemGap: 30,
             textStyle:{
               fontWeight:"bold",
@@ -267,7 +278,7 @@
               },
               data:[
                 {value:this.pieData.feeDayPrice, name:'物业'},
-                {value:this.pieData.leaseholdDayPrice, name:'租赁'},
+                {value:this.pieData.leaseholdDayPrice, name:'招商'},
                 {value:this.pieData.saleDayPrice, name:'已售'},
               ]
             }
@@ -279,9 +290,17 @@
         let myChart = this.$echarts.init(document.getElementById('barChart'))
         // 绘制图表
         myChart.setOption({
+          title:{
+            show:true,
+            text:'销售收益对比',
+            x:'center',
+            textStyle: {
+              fontSize: 12,
+            },
+          },
           grid:{
             left:10,
-            top:25,
+            top:55,
             right:10,
             bottom:20
           },
@@ -298,6 +317,8 @@
             axisLabel: {color: "#000"}
           },
           yAxis: {
+            name:'万元',
+            nameGap:0,
             axisLine:{  //坐标轴线
               lineStyle: {
                 color: "#c8cdd6"
@@ -321,7 +342,7 @@
               '今年', '去年'
             ],
             left: 10,
-            top: 0,
+            top: 20,
             itemWidth: 8,
             itemHeight: 2,
             textStyle:{fontWeight:"bold"}
@@ -332,23 +353,143 @@
             itemStyle: {
               normal: {
                 color: '#a9e7a9',
-                // label:{show:true}
+                label:{
+                  show:true,
+                  position: 'top', //在上方显示
+                  textStyle: { //数值样式
+                    color: 'black',
+                    fontSize: 12
+                  }
+                }
               }
             },
             silent: true,
             barWidth: 8,
             // barGap: '100%', // Make series be overlap
-            data: this.thisYear,
+            data: this.thissaleYear,
 
           }, {
             name: '去年',
             type: 'bar',
             barWidth: 8,
             z: 10,
-            data: this.lastYear,
+            data: this.lastsaleYear,
             itemStyle: {
               normal: {
                 color: '#ffb19c',
+                label:{
+                  show:true,
+                  position: 'top', //在上方显示
+                  textStyle: { //数值样式
+                    color: 'black',
+                    fontSize: 12
+                  }
+                }
+              }
+            },
+          }]
+        });
+      },
+      drawBar1() {
+        // 基于准备好的dom，初始化echarts实例
+        let myChart1 = this.$echarts.init(document.getElementById('barChart1'))
+        // 绘制图表
+        myChart1.setOption({
+          title:{
+            show:true,
+            text:'招商收益对比',
+            x:'center',
+            textStyle: {
+              fontSize: 12,
+            },
+          },
+          grid:{
+            left:10,
+            top:55,
+            right:10,
+            bottom:20
+          },
+          xAxis: {
+            data: ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"],
+            axisLine:{  //坐标轴线
+              lineStyle: {
+                color: "#c8cdd6"
+              }
+            },
+            axisTick: {  //坐标轴刻度
+              show: false
+            },
+            axisLabel: {color: "#000"}
+          },
+          yAxis: {
+            name:'万元',
+            nameGap:0,
+            axisLine:{  //坐标轴线
+              lineStyle: {
+                color: "#c8cdd6"
+              }
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              show: false
+            },
+            splitLine:{
+              lineStyle:{
+                color:"#fafafa"
+              }
+            }
+          },
+          //图例
+          legend: {
+            data: [
+              '今年', '去年'
+            ],
+            left: 10,
+            top: 20,
+            itemWidth: 8,
+            itemHeight: 2,
+            textStyle:{fontWeight:"bold"}
+          },
+          series: [{
+            name: '今年',
+            type: 'bar',
+            itemStyle: {
+              normal: {
+                color: '#a9e7a9',
+                label:{
+                  show:true,
+                  position: 'top', //在上方显示
+                  textStyle: { //数值样式
+                    color: 'black',
+                    fontSize: 12
+                  }
+                }
+              }
+            },
+            silent: true,
+            barWidth: 8,
+            // barGap: '100%', // Make series be overlap
+            data: this.thisleaseholdYear,
+
+          }, {
+            name: '去年',
+            type: 'bar',
+            barWidth: 8,
+            z: 10,
+            data: this.lastleaseholdYear,
+            itemStyle: {
+              normal: {
+                color: '#ffb19c',
+                label:{
+                  show:true,
+                  position: 'top', //在上方显示
+                  textStyle: { //数值样式
+                    color: 'black',
+                    fontSize: 12
+                  }
+                }
               }
             },
           }]
@@ -479,6 +620,7 @@
         left: 50%;
         font-size: 14px;
         font-weight: bold;
+        text-align: left;
         div{
           margin-bottom: 24px;
         }
@@ -508,12 +650,13 @@
     .bar{
       margin: 0 auto;
       width: 90%;
-      height: 224px;
+      height: 380px;
       border-radius: 8px;
       box-shadow: 0 4px 10px #4ea9de4d;
-      #barChart{
+      #barChart,#barChart1{
         width: 100%;
         height: 150px;
+        margin-top: 10px;
       }
     }
     .pie1{

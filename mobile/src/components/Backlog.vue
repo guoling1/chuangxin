@@ -10,7 +10,7 @@
       </div>
       <tab :line-width="2" :active-color="'#105ba7'" :default-color="'#000'" :bar-active-color="'#105ba7'">
         <tab-item selected @on-item-click="switchTabItem(5)">物业</tab-item>
-        <tab-item @on-item-click="switchTabItem(2)">租赁</tab-item>
+        <tab-item @on-item-click="switchTabItem(2)">招商</tab-item>
         <tab-item @on-item-click="switchTabItem(1)">销售</tab-item>
         <tab-item @on-item-click="switchTabItem(3)">水</tab-item>
         <tab-item @on-item-click="switchTabItem(4)">电</tab-item>

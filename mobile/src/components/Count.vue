@@ -30,7 +30,7 @@
            :bar-active-color="'#105ba7'"
            custom-bar-width="62px" prevent-default @on-before-index-change="switchTabItem">
         <tab-item selected>物业</tab-item>
-        <tab-item>租赁</tab-item>
+        <tab-item>招商</tab-item>
         <tab-item>销售</tab-item>
       </tab>
     </div>
@@ -124,12 +124,12 @@
         vm.getDate();
         if(from.name=='countDetail'){
           if(JSON.parse(localStorage.getItem('time')).startTime.toString()==vm.date.toString()){
-            vm.startTime = '选择开始时间'
+            vm.startTime = vm.lastMD
           }else {
             vm.startTime = JSON.parse(localStorage.getItem('time')).startTime
           }
           if(JSON.parse(localStorage.getItem('time')).endTime.toString()==vm.date.toString()){
-            vm.endTime = '选择截止时间'
+            vm.endTime = vm.date
           }else {
             vm.endTime = JSON.parse(localStorage.getItem('time')).endTime
           }
@@ -137,8 +137,8 @@
           vm.status = JSON.parse(localStorage.getItem('time')).status
           vm.index = JSON.parse(localStorage.getItem('time')).index
         }else {
-          vm.startTime = '选择开始时间'
-          vm.endTime = '选择截止时间'
+          vm.startTime = vm.lastMD
+          vm.endTime = vm.date
           vm.status = 0;
           vm.index = 0;
         }
@@ -146,6 +146,8 @@
       })
     },
     created() {
+      console.log(this.date)
+      // this.endTime =this.date
       window.addEventListener('scroll', this.onScroll);
     },
     mounted() {
@@ -159,6 +161,16 @@
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];
         this.week = week[new Date().getDay()]
+
+        var nowdate = new Date();
+
+        nowdate.setMonth(nowdate.getMonth()-1);
+        var y = nowdate.getFullYear();
+        var m = nowdate.getMonth()+1> 10 ? nowdate.getMonth()+1 : '0' + (nowdate.getMonth()+1);
+        var d = nowdate.getDate()> 10 ? nowdate.getDate() : '0' + nowdate.getDate();
+        this.lastMD = y+'-'+m+'-'+d;
+        // this.endTime =222;
+
       },
       getData() {
         this.isLoad = true;
