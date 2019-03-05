@@ -12,6 +12,7 @@ import BacklogHistoryDt from "../components/BacklogHistoryDt";
 import Homes from "../components/Homes";
 import HomesDetail from "../components/HomesDetail";
 import CountDetail from "../components/CountDetail";
+import ChangePwd from "../components/ChangePwd";
 
 Vue.use(Router)
 
@@ -117,6 +118,15 @@ export default new Router({
         keepAlive: false
       },
       component: Login
+    },
+    {
+      path:'/changePwd',
+      name:'changePwd',
+      meta:{
+        title:"修改密码",
+        keepAlive: false
+      },
+      component: ChangePwd
     },
     {
       path:'/homesDetail',

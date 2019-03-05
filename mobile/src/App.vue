@@ -1,6 +1,9 @@
 <template>
   <div id="app" class="flex-box-column flexBox" style="background: #fff">
     <div class="title">
+      <div class="back" @click="changePwd()" v-if="this.$route.name=='home'">
+        <span>修改密码</span>
+      </div>
       <div class="back" @click="back()" v-if="this.$route.name!='home'&&this.$route.name!='count'&&this.$route.name!='homes'&&this.$route.name!='login'">
         <img src="./assets/back.png" alt="">
         <span>返回</span>
@@ -44,6 +47,9 @@
             this.showPrompt = true;
             this.promptMsg = err;
           })
+      },
+      changePwd(){
+        this.$router.push('/changePwd')
       },
       back() {
         this.$router.go(-1)

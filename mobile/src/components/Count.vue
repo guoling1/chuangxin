@@ -29,8 +29,8 @@
       <tab v-model="index" :line-width="2" :active-color="'#105ba7'" :default-color="'#000'"
            :bar-active-color="'#105ba7'"
            custom-bar-width="62px" prevent-default @on-before-index-change="switchTabItem">
-        <tab-item selected>物业</tab-item>
-        <tab-item>招商</tab-item>
+        <tab-item selected>招商</tab-item>
+        <tab-item>物业</tab-item>
         <tab-item>销售</tab-item>
       </tab>
     </div>
@@ -48,7 +48,7 @@
         </thead>
         <tbody>
         <!--物业-->
-        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==0">
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==1">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisFeePrice}}</td>
@@ -63,7 +63,7 @@
           <td v-if="status=='1'&&!item.feeTb1" :class="item.numStatus1?'red':'green'"></td>
         </tr>
         <!--租赁-->
-        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==1">
+        <tr v-for="item in dataList" @click="toDetail(item.villageId)" v-if="index==0">
           <td>{{item.date}}</td>
           <td>{{item.villageName}}</td>
           <td v-if="status=='0'">{{item.thisLeaseholdPrice}}</td>
