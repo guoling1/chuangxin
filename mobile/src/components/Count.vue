@@ -250,9 +250,9 @@
       },
       toDetail(id){
         let type;
-        if (this.index == 0) {
+        if (this.index == 1) {
           type = "fee";
-        } else if (this.index == 1) {
+        } else if (this.index == 0) {
           type = "leasehold";
         } else if (this.index == 2) {
           type = "sale";
@@ -290,9 +290,9 @@
       },
       switchTabItem(index) {
         // this.isLoad = true;
-        if (index == 0) {
+        if (index == 1) {
           this.url="/show/statistics/fee";
-        } else if (index == 1) {
+        } else if (index == 0) {
           this.url="/show/statistics/leasehold";
         } else if (index == 2) {
           this.url="/show/statistics/sale";
