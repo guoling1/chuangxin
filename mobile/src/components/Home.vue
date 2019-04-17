@@ -3,7 +3,7 @@
     <div class="top">
       <div class="up">
         <!--<img src="../assets/home-tit1.png" alt="" class="top_title">-->
-        <p style="font-size: 24px;font-weight: bold;margin-bottom: 5px;">物业、招商、销售全年收入</p>
+        <p style="font-size: 22px;font-weight: bold;margin-bottom: 5px;">物业、招商、销售全年收入</p>
         <div class="date">{{date}} 星期{{week}}</div>
       </div>
       <div class="content">

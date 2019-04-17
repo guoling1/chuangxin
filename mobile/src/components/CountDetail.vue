@@ -18,9 +18,13 @@
               <p class="name">缴费时间</p>
               <p class="detail">{{item.payTime}}</p>
             </div>
-            <div>
+            <div style="max-width: 33%">
               <p class="name">门牌号码</p>
-              <p class="detail">{{item.position}}-{{item.merchantHouseNumber}}</p>
+              <p class="detail" style="width: 100%;white-space: nowrap;
+
+ text-overflow:ellipsis;
+
+ overflow:hidden;">{{item.position}}-{{item.merchantHouseNumber}}</p>
             </div>
             <div class="price">
               <p class="name">缴费金额</p>
