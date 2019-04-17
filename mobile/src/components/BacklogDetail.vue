@@ -17,8 +17,8 @@
         <span>{{data.position}}</span>
       </li>
       <li>
-        <span>房号：</span>
-        <span>{{data.merchantHouseNumber}}</span>
+        <span>房号：{{data.merchantHouseNumber}}</span>
+        <span></span>
       </li>
       <li>
         <span>面积：</span>
@@ -110,8 +110,11 @@
       }
     }
     .name{
+      width: 92%;
       font-size: 16px;
       font-weight: bold;
+      word-wrap: break-word;
+      margin: 0 auto;
     }
     .time{
       margin: 13px 0;
@@ -130,6 +133,9 @@
       li{
         font-weight: bold;
         line-height: 26px;
+      }
+      span{
+        word-wrap: break-word;
       }
     }
     .btnGroup{
