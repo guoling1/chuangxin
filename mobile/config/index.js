@@ -14,6 +14,7 @@ module.exports = {
       '/api': {
         target: 'http://27.188.141.23:8084',
         // target: 'http://cx.o87.net:8080',
+        // target: 'http://hdjincheng.6655.la:80',
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''

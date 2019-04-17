@@ -9,6 +9,7 @@
         <input v-model="formData.password" type="password" placeholder="请输入密码">
       </li>
     </ul>
+    <div class="remember" @click="remember"><span :class="isMember?'active':''"><img src="../assets/tick.png" alt=""></span>记住密码</div>
     <div class="btn-group">
       <div class="submit" @click="login()">登陆</div>
       <div class="cancel" @click="clear">清除</div>
@@ -31,19 +32,38 @@
             phoneReg:/^1[3|4|5|6|7|8][0-9]{9}$/,
             showPrompt:false,
             promptMsg:'',
-            isLoad:false
+            isLoad:false,
+            isMember:false
           }
       },
       created(){
         if(localStorage.getItem('loginUser')){
           this.formData.loginName = JSON.parse(localStorage.getItem('loginUser')).loginName
         }
+        if(localStorage.getItem('memberData')){
+          this.formData.loginName = JSON.parse(localStorage.getItem('memberData')).loginName;
+          this.formData.password = JSON.parse(localStorage.getItem('memberData')).password;
+          this.isMember = true;
+        }
       },
       methods:{
+        remember(){
+          if(this.isMember == true){
+            this.isMember = false
+          }else {
+            this.isMember = true;
+          }
+        },
         login(){
           if(!this.formData.loginName||!this.formData.password){
             this.showPrompt = true;
             this.promptMsg = '请填写用户名和密码'
+          }
+          if(this.isMember == false){
+            localStorage.removeItem('memberData')
+          }else {
+            this.isMember = true;
+            localStorage.setItem('memberData',JSON.stringify(this.formData))
           }
           this.isLoad = true;
           this.$axios.post("/loginH5",this.formData)
@@ -89,7 +109,7 @@
     background: url("../assets/bg.png") no-repeat bottom;
     background-size: 100% auto;
     .login{
-      margin-top: 80px;
+      margin-top: 40px;
       width: 130px;
       height: auto;
     }
@@ -132,6 +152,24 @@
       bottom: 10px;
       width: 100%;
       font-size: 12px;
+    }
+    .remember{
+      margin: 10px 0 0 15px;
+      text-align: left;
+      font-size: 12px;
+      color: #666;
+      span{
+        display: inline-block;
+        margin-right: 5px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        vertical-align: text-top;
+        background: #cbcbcb;
+      }
+      span.active{
+        background: #105ba7;
+      }
     }
   }
 </style>
