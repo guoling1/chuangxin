@@ -3,7 +3,7 @@
     <div class="top">
       <div class="up">
         <img src="../assets/home-tit.png" alt="" class="top_title">
-        <div class="date">2018年11月23日</div>
+        <div class="date">{{date}}</div>
       </div>
       <div class="content">
         <div class="price">{{topData.dayPrice}}<span>元</span></div>
@@ -54,6 +54,8 @@
     name: 'Home',
     data() {
       return {
+        date:'',
+        week:'',
         topData:{
           dayPrice:0,
           monthPrice:0,
@@ -75,10 +77,19 @@
       // this.drawBar();  // 初始化
     },
     created() {
+      this.getDate();
       this.getData()
       this.getBarData()
     },
     methods: {
+      getDate() {
+        let year = new Date().getFullYear();
+        let month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : '0' + new Date().getMonth() + 1;
+        let date = new Date().getDate() > 9 ? new Date().getDate() : '0' + new Date().getDate();
+        this.date = year + '年' + month + '月' + date + '日';
+        let week = ['日', '一', '二', '三', '四', '五', '六'];
+        this.week = week[new Date().getDay()]
+      },
       getData() {
         this.isLoad = true;
         this.$axios.post("/show/statistics/mainDetail")
