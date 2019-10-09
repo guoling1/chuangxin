@@ -156,8 +156,8 @@
     methods: {
       getDate() {
         let year = new Date().getFullYear();
-        let month = new Date().getMonth() + 1 > 10 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
-        let date = new Date().getDate() > 10 ? new Date().getDate() : '0' + new Date().getDate();
+        let month = new Date().getMonth() + 1 > 9 ? new Date().getMonth() + 1 : '0' + (new Date().getMonth() + 1);
+        let date = new Date().getDate() > 9 ? new Date().getDate() : '0' + new Date().getDate();
         this.date = year + '-' + month + '-' + date;
         let week = ['日', '一', '二', '三', '四', '五', '六'];
         this.week = week[new Date().getDay()]
@@ -166,8 +166,8 @@
 
         nowdate.setMonth(nowdate.getMonth()-1);
         var y = nowdate.getFullYear();
-        var m = nowdate.getMonth()+1> 10 ? nowdate.getMonth()+1 : '0' + (nowdate.getMonth()+1);
-        var d = nowdate.getDate()> 10 ? nowdate.getDate() : '0' + nowdate.getDate();
+        var m = nowdate.getMonth()+1> 9 ? nowdate.getMonth()+1 : '0' + (nowdate.getMonth()+1);
+        var d = nowdate.getDate()> 9 ? nowdate.getDate() : '0' + nowdate.getDate();
         this.lastMD = y+'-'+m+'-'+d;
         // this.endTime =222;
 
